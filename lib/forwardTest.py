@@ -5,8 +5,8 @@ reset_mcu()
 
 if __name__ == "__main__":
     px = Picarx()
-    px.set_dir_servo_angle(-5)
-    time.sleep(1)
+    px.set_dir_servo_angle(-20)
+    time.sleep(2)
     px.forward(50)
     time.sleep(1)
     px.stop()
