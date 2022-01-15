@@ -1,4 +1,4 @@
-from picarx_improved import Picarx
+from picarx import Picarx
 from utils import reset_mcu
 import time
 reset_mcu()
