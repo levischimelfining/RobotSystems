@@ -56,7 +56,7 @@ class Picarx(object):
             pin.period(self.PERIOD)
             pin.prescaler(self.PRESCALER)
 
-
+        atexit.register(self.cleanup)
 
     def set_motor_speed(self,motor,speed):
         # global cali_speed_value,cali_dir_value
@@ -216,6 +216,9 @@ class Picarx(object):
         cm = round(during * 340 / 2 * 100, 2)
         #print(cm)
         return cm
+
+    def cleanup(self):
+        self.forward(0)
 
 
 if __name__ == "__main__":
