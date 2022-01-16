@@ -11,7 +11,7 @@ if __name__ == "__main__":
         px.set_dir_servo_angle(dir_angle)
         time.sleep(0.5)
         px.forward(50)
-        time.sleep(0.1)
+        time.sleep(3)
         px.stop()
 
     # Drive backward in a straight line
@@ -19,7 +19,7 @@ if __name__ == "__main__":
         px.set_dir_servo_angle(dir_angle)
         time.sleep(0.5)
         px.backward(50)
-        time.sleep(0.1)
+        time.sleep(3)
         px.stop()
 
     # Parallel park
@@ -58,6 +58,7 @@ if __name__ == "__main__":
               " a=parallel park"
               " d=K-turn"
               " q=quit")
+
         maneuver = input()
 
         if maneuver == "w":
@@ -70,27 +71,27 @@ if __name__ == "__main__":
             drive_backward(dir_angle)
         elif maneuver == "q":
             break
-
-        print("Please choose a direction:"
-              " l=left"
-              " r=right"
-              " q=quit")
-        direction = input()
-
-        if direction == "l":
-            dir = -1
-        elif direction == "r":
-            dir = 1
-        elif direction == "q":
-            break
         else:
-            print("Direction not chosen")
+            print("Please choose a direction:"
+                  " l=left"
+                  " r=right"
+                  " q=quit")
+            direction = input()
 
-        if maneuver == "a":
-            parallel_park()
-        elif maneuver == "d":
-            k_turn()
-        else:
-            print("Maneuver not chosen, please try again")
+            if direction == "l":
+                dir = -1
+            elif direction == "r":
+                dir = 1
+            elif direction == "q":
+                break
+            else:
+                print("Direction not chosen")
+
+            if maneuver == "a":
+                parallel_park()
+            elif maneuver == "d":
+                k_turn()
+            else:
+                print("Maneuver not chosen, please try again")
 
         time.sleep(10)
