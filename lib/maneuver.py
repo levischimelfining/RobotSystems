@@ -29,7 +29,10 @@ if __name__ == "__main__":
         for angle in range(0, dir*35, dir*1):
             px.set_dir_servo_angle(angle)
             time.sleep(0.01)
-        for angle in range(dir*35, 0, dir*-1):
+        for angle in range(dir*35, -dir*35, -dir*1):
+            px.set_dir_servo_angle(angle)
+            time.sleep(0.01)
+        for angle in range(-dir*35, 0, dir*1):
             px.set_dir_servo_angle(angle)
             time.sleep(0.01)
         time.sleep(0.5)
@@ -52,7 +55,9 @@ if __name__ == "__main__":
         time.sleep(0.5)
         px.stop()
         time.sleep(0.5)
-        px.set_dir_servo_angle(-dir*35)
+        for angle in range(0, -dir * 35, -dir * 1):
+            px.set_dir_servo_angle(angle)
+            time.sleep(0.01)
         px.backward(50)
         time.sleep(0.5)
         for angle in range(-dir*35, 0, dir*1):
@@ -60,8 +65,11 @@ if __name__ == "__main__":
             time.sleep(0.01)
         px.stop()
         time.sleep(0.5)
-        px.set_dir_servo_angle(0)
         px.forward(50)
+        time.sleep(1)
+        for angle in range(0, dir * 35, dir * 1):
+            px.set_dir_servo_angle(angle)
+            time.sleep(0.01)
         time.sleep(1)
         px.stop()
 
