@@ -60,9 +60,6 @@ if __name__ == "__main__":
         for angle in range(0, -dir * 35, -dir * 1):
             px.set_dir_servo_angle(angle)
             time.sleep(0.01)
-        #for angle in range(-dir*35, 0, dir*1):
-           # px.set_dir_servo_angle(angle)
-            #time.sleep(0.01)
         time.sleep(0.5)
         px.stop()
         time.sleep(0.5)
@@ -86,8 +83,10 @@ if __name__ == "__main__":
               " d=K-turn"
               " q=quit")
 
+        # Store the users answer
         maneuver = input()
 
+        # For only forward and back movement, user can specify an angle
         if maneuver == "w":
             print("Choose an angle [-35 to 35]")
             dir_angle = int(input())
@@ -99,6 +98,7 @@ if __name__ == "__main__":
         elif maneuver == "q":
             break
         else:
+            # For only parking and turning, user can specify a direction
             print("Please choose a direction:"
                   " l=left"
                   " r=right"
