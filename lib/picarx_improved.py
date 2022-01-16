@@ -8,15 +8,20 @@ logging_format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
 logging.getLogger().setLevel(logging.DEBUG)
 
-try :
-    from ezblock import *
-    from ezblock import __reset_mcu__
-    __reset_mcu__ ()
-    time . sleep (0.01)
-except ImportError :
+try:
+    from utils import *
+    from utils import __reset_mcu__
+    from servo import Servo
+    from pwm import PWM
+    from pin import Pin
+    from adc import ADC
+    from filedb import fileDB
+    __reset_mcu__()
+    time . sleep(0.01)
+except ImportError:
     print(
         " This computer does not appear to be a PiCar -X system "
-        "( ezblock is not present ). Shadowing hardware calls with "
+        "( utils is not present ). Shadowing hardware calls with "
         "substitute functions ")
     from sim_ezblock import *
 
@@ -243,5 +248,3 @@ if __name__ == "__main__":
 #             test()
 #     finally: 
 #         stop()
-
-atexit.register(Picarx.set_motor_speed, 1, 0)
