@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Parallel park
     def parallel_park():
         px.forward(50)
-        time.sleep(1)
+        time.sleep(0.5)
         for angle in range(0, dir*35, dir*1):
             px.set_dir_servo_angle(angle)
             time.sleep(0.01)
@@ -36,6 +36,7 @@ if __name__ == "__main__":
         time.sleep(0.5)
         px.backward(50)
         time.sleep(0.5)
+        px.stop()
 
     # Perform a K turn
     def k_turn():
