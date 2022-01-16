@@ -121,4 +121,4 @@ if __name__ == "__main__":
             else:
                 print("Maneuver not chosen, please try again")
 
-        time.sleep(8)
+        time.sleep(5)
