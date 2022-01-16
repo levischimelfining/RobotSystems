@@ -1,5 +1,6 @@
 import math
 
+
 class Servo(object):
     MAX_PW = 2500
     MIN_PW = 500

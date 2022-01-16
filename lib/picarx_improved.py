@@ -53,7 +53,7 @@ class Picarx(object):
         self.cali_dir_value = self.config_flie.get("picarx_dir_motor", default_value="[1,1]")
         self.cali_dir_value = [int(i.strip()) for i in self.cali_dir_value.strip("[]").split(",")]
         self.cali_speed_value = [0, 0]
-        self.dir_current_angle = 0
+        self.dir_current_angle = -9
         #初始化PWM引脚
         for pin in self.motor_speed_pins:
             pin.period(self.PERIOD)
@@ -89,7 +89,7 @@ class Picarx(object):
             self.cali_speed_value[0] = abs(self.cali_speed_value)
             self.cali_speed_value[1] = 0
 
-    def motor_direction_calibration(self,motor, value):
+    def motor_direction_calibration(self, motor, value):
         # 0: positive direction
         # 1:negative direction
         # global cali_dir_value
@@ -98,12 +98,11 @@ class Picarx(object):
             self.cali_dir_value[motor] = -1 * self.cali_dir_value[motor]
         self.config_flie.set("picarx_dir_motor", self.cali_dir_value)
 
-
-    def dir_servo_angle_calibration(self,value):
+    def dir_servo_angle_calibration(self, value):
         # global dir_cal_value
         self.dir_cal_value = value
-        print("calibrationdir_cal_value:",self.dir_cal_value)
-        self.config_flie.set("picarx_dir_servo", "%s"%value)
+        print("calibrationdir_cal_value:", self.dir_cal_value)
+        self.config_flie.set("picarx_dir_servo", "%s" % value)
         self.dir_servo_pin.angle(value)
 
     def set_dir_servo_angle(self,value):
@@ -185,7 +184,7 @@ class Picarx(object):
                 self.set_motor_speed(2, -1*speed * power_scale)
             else:
                 self.set_motor_speed(1, speed * power_scale)
-                self.set_motor_speed(2, -1*speed )
+                self.set_motor_speed(2, -1*speed)
         else:
             self.set_motor_speed(1, speed)
             self.set_motor_speed(2, -1*speed)                  
@@ -245,4 +244,4 @@ if __name__ == "__main__":
 #     finally: 
 #         stop()
 
-atexit.register(Picarx.set_motor_speed, 1, 0, 2, 0)
+atexit.register(Picarx.set_motor_speed, 1, 0)
