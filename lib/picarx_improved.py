@@ -2,18 +2,12 @@ import atexit
 import time
 import logging
 
-#from logdecorator import log_on_start , log_on_end , log_on_error
-
-logging_format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S")
-logging.getLogger().setLevel(logging.DEBUG)
-
 try:
     from sim_ezblock import *
+
+    print(" This computer does not appear to be a PiCar -X system (ezblock is not present). "
+          "Shadowing hardware calls with substitute functions ")
 except ImportError:
-    print(
-        " This computer appears to be a PiCar -X system "
-        "( sim_utils is not present ). Hardware calls using normal functions")
     from servo import Servo
     from pwm import PWM
     from pin import Pin
@@ -32,7 +26,7 @@ class Picarx(object):
         self.camera_servo_pin1 = Servo(PWM('P0'))
         self.camera_servo_pin2 = Servo(PWM('P1'))
         self.config_flie = fileDB('/home/pi/.config')
-        self.dir_cal_value = int(self.config_flie.get("picarx_dir_servo", default_value=0))
+        self.dir_cal_value = int(self.config_flie.get("picarx_dir_servo", default_value=-9))
         self.cam_cal_value_1 = int(self.config_flie.get("picarx_cam1_servo", default_value=0))
         self.cam_cal_value_2 = int(self.config_flie.get("picarx_cam2_servo", default_value=0))
         self.dir_servo_pin.angle(self.dir_cal_value)
@@ -54,7 +48,7 @@ class Picarx(object):
         self.cali_dir_value = self.config_flie.get("picarx_dir_motor", default_value="[1,1]")
         self.cali_dir_value = [int(i.strip()) for i in self.cali_dir_value.strip("[]").split(",")]
         self.cali_speed_value = [0, 0]
-        self.dir_current_angle = -9
+        self.dir_current_angle = 0
         #初始化PWM引脚
         for pin in self.motor_speed_pins:
             pin.period(self.PERIOD)
@@ -102,34 +96,34 @@ class Picarx(object):
     def dir_servo_angle_calibration(self, value):
         # global dir_cal_value
         self.dir_cal_value = value
-        print("calibrationdir_cal_value:", self.dir_cal_value)
+        print("calibration dir_cal_value:", self.dir_cal_value)
         self.config_flie.set("picarx_dir_servo", "%s" % value)
         self.dir_servo_pin.angle(value)
 
-    def set_dir_servo_angle(self,value):
+    def set_dir_servo_angle(self, value):
         # global dir_cal_value
         self.dir_current_angle = value
-        angle_value  = value + self.dir_cal_value
-        print("angle_value:",angle_value)
+        angle_value = value + self.dir_cal_value
+        print("angle_value:", angle_value)
         # print("set_dir_servo_angle_1:",angle_value)
         # print("set_dir_servo_angle_2:",dir_cal_value)
         self.dir_servo_pin.angle(angle_value)
 
-    def camera_servo1_angle_calibration(self,value):
+    def camera_servo1_angle_calibration(self, value):
         # global cam_cal_value_1
         self.cam_cal_value_1 = value
         self.config_flie.set("picarx_cam1_servo", "%s"%value)
         print("cam_cal_value_1:",self.cam_cal_value_1)
         self.camera_servo_pin1.angle(value)
 
-    def camera_servo2_angle_calibration(self,value):
+    def camera_servo2_angle_calibration(self, value):
         # global cam_cal_value_2
         self.cam_cal_value_2 = value
-        self.config_flie.set("picarx_cam2_servo", "%s"%value)
-        print("picarx_cam2_servo:",self.cam_cal_value_2)
+        self.config_flie.set("picarx_cam2_servo", "%s" % value)
+        print("picarx_cam2_servo:", self.cam_cal_value_2)
         self.camera_servo_pin2.angle(value)
 
-    def set_camera_servo1_angle(self,value):
+    def set_camera_servo1_angle(self, value):
         # global cam_cal_value_1
         self.camera_servo_pin1.angle(-1*(value + -1*self.cam_cal_value_1))
         # print("self.cam_cal_value_1:",self.cam_cal_value_1)
@@ -208,11 +202,11 @@ class Picarx(object):
         pulse_end = 0
         pulse_start = 0
         timeout_start = time.time()
-        while echo.value()==0:
+        while echo.value() == 0:
             pulse_start = time.time()
             if pulse_start - timeout_start > timeout:
                 return -1
-        while echo.value()==1:
+        while echo.value() == 1:
             pulse_end = time.time()
             if pulse_end - timeout_start > timeout:
                 return -2
@@ -220,7 +214,6 @@ class Picarx(object):
         cm = round(during * 340 / 2 * 100, 2)
         #print(cm)
         return cm
-
 
 
 if __name__ == "__main__":
