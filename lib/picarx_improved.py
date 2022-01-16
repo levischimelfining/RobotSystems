@@ -9,21 +9,17 @@ logging.basicConfig(format=logging_format, level=logging.INFO, datefmt="%H:%M:%S
 logging.getLogger().setLevel(logging.DEBUG)
 
 try:
-    from utils import *
-    from utils import __reset_mcu__
+    from sim_ezblock import *
+except ImportError:
+    print(
+        " This computer appears to be a PiCar -X system "
+        "( sim_utils is not present ). Hardware calls using normal functions")
     from servo import Servo
     from pwm import PWM
     from pin import Pin
     from adc import ADC
     from filedb import fileDB
-    __reset_mcu__()
-    time . sleep(0.01)
-except ImportError:
-    print(
-        " This computer does not appear to be a PiCar -X system "
-        "( utils is not present ). Shadowing hardware calls with "
-        "substitute functions ")
-    from sim_ezblock import *
+    import time
 
 
 class Picarx(object):
