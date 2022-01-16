@@ -1,7 +1,6 @@
 from picarx_improved import Picarx
-from utils import reset_mcu
 import time
-reset_mcu()
+
 
 if __name__ == "__main__":
     px = Picarx()
@@ -10,6 +9,3 @@ if __name__ == "__main__":
     px.forward(30)
     time.sleep(1)
     px.stop()
-
-
-

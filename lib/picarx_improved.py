@@ -14,6 +14,8 @@ except ImportError:
     from adc import ADC
     from filedb import fileDB
     import time
+    from utils import reset_mcu
+    reset_mcu()
 
 
 class Picarx(object):
