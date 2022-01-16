@@ -65,6 +65,7 @@ if __name__ == "__main__":
             #time.sleep(0.01)
         px.stop()
         time.sleep(0.5)
+        px.set_dir_servo_angle(0)
         px.forward(50)
         time.sleep(1)
         for angle in range(0, dir * 35, dir * 1):
