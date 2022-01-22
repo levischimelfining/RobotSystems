@@ -36,7 +36,7 @@ class Interpretation:
 
     def interpret(self, adc_list):
 
-        if self.polarity != 1 or self.polarity != -1:
+        if self.polarity != 1 and self.polarity != -1:
             return RuntimeError("Invalid polarity")
 
         if abs(adc_list[2]-adc_list[0]) > self.sensitivity:
