@@ -66,7 +66,10 @@ class Controller:
 if __name__ == "__main__":
 
     while True:
-        sensor = Sensing.sensor_reading()
-        interpret = Interpretation.interpret(adc_list=sensor)
-        Controller.control(output=interpret)
+        sensor = Sensing()
+        sensor_output = sensor.sensor_reading()
+        interpreter = Interpretation()
+        interpreter_output = interpreter.interpret(adc_list=sensor_output)
+        controller_output = Controller()
+        controller_output.control(output=interpreter_output)
         time.sleep(0.5)
