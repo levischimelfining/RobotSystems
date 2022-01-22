@@ -40,7 +40,7 @@ class Interpretation:
             return RuntimeError("Invalid polarity")
 
         if abs(adc_list[2]-adc_list[0]) > self.sensitivity:
-            output = self.polarity * sign(adc_list[2] - adc_list[0])*(self.sensitivity + min(adc_list))/max(adc_list)
+            output = -self.polarity * sign(adc_list[2] - adc_list[0])*(self.sensitivity + min(adc_list))/max(adc_list)
             if output > 1:
                 output = 1
             elif output < -1:
