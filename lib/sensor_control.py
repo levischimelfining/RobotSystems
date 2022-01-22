@@ -60,16 +60,18 @@ class Controller:
         px = Picarx()
         angle = self.scaling_factor * output
         px.set_dir_servo_angle(angle)
+        time.sleep(0.5)
         return angle
 
 
 if __name__ == "__main__":
 
+    sensor = Sensing()
+    interpreter = Interpretation()
+    controller_output = Controller()
+
     while True:
-        sensor = Sensing()
         sensor_output = sensor.sensor_reading()
-        interpreter = Interpretation()
         interpreter_output = interpreter.interpret(adc_list=sensor_output)
-        controller_output = Controller()
         controller_output.control(output=interpreter_output)
         time.sleep(0.5)
