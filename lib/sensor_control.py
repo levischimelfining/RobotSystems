@@ -63,10 +63,9 @@ class Controller:
         return angle
 
 
-def grayscale_control():
+if __name__ == "__main__":
 
     while True:
-
         sensor = Sensing.sensor_reading()
         interpret = Interpretation.interpret(adc_list=sensor)
         Controller.control(output=interpret)
