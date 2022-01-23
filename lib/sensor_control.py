@@ -8,6 +8,7 @@ from picarx_improved import Picarx
 import time
 
 
+# Set up the outputs from the ADC pins
 class Sensing:
     def __init__(self):
         self.chn_0 = ADC("A0")
@@ -22,6 +23,7 @@ class Sensing:
         return adc_value_list
 
 
+# Set up how the robot interprets the sensor input
 class Interpretation:
     def __init__(self):
         self.sensitivity = int(
@@ -39,6 +41,7 @@ class Interpretation:
         if self.polarity != 1 and self.polarity != -1:
             return RuntimeError("Invalid polarity")
 
+        # Map the inputs to a range from [-1, 1] based on how far away it is from the sensed object
         if abs(adc_list[2]-adc_list[0]) > self.sensitivity:
             output = -self.polarity * sign(adc_list[2] - adc_list[0])*(self.sensitivity + min(adc_list))/max(adc_list)
             if output > 1:
@@ -51,11 +54,13 @@ class Interpretation:
         return output
 
 
+# Set up how the interpreted data gets utilized
 class Controller:
 
     def __init__(self):
         self.scaling_factor = int(input("Enter the scaling factor for the angle [1-35]" or "35"))
 
+    # Translate the interpretation into a steering angle
     def control(self, output):
         px = Picarx()
         angle = self.scaling_factor * output
@@ -72,6 +77,7 @@ if __name__ == "__main__":
     px = Picarx()
     px.forward(20)
 
+    # Drive the car forward while automatically steering
     while True:
         sensor_output = sensor.sensor_reading()
         interpreter_output = interpreter.interpret(adc_list=sensor_output)
