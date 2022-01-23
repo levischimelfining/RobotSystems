@@ -70,7 +70,7 @@ if __name__ == "__main__":
     interpreter = Interpretation()
     controller_output = Controller()
     px = Picarx()
-    px.forward(10)
+    px.forward(20)
 
     while True:
         sensor_output = sensor.sensor_reading()
