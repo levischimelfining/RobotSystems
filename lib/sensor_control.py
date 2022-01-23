@@ -69,9 +69,11 @@ if __name__ == "__main__":
     sensor = Sensing()
     interpreter = Interpretation()
     controller_output = Controller()
+    px = Picarx()
+    px.forward(10)
 
     while True:
         sensor_output = sensor.sensor_reading()
         interpreter_output = interpreter.interpret(adc_list=sensor_output)
         controller_output.control(output=interpreter_output)
-        time.sleep(0.5)
+        time.sleep(0.05)
