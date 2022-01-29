@@ -64,6 +64,7 @@ def interpreter_function(sensor_values_bus, interpreter_bus, interpreter_delay):
 
         interpreter_bus.write(message=output)
         time.sleep(interpreter_delay)
+        print(interpreter_bus.read())
 
 
 # Create controller function that maps read values from interpreter bus to an actual steering angle
