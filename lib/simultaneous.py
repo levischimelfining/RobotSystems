@@ -27,6 +27,14 @@ class MessageBus:
         return message
 
 
+class SensorBus(MessageBus):
+    pass
+
+
+class InterpreterBus(MessageBus):
+    pass
+
+
 # Create sensor function that writes the ADC values to the sensor_value_bus
 def sensor_function(sensor_values_bus, sensor_delay):
     while True:
@@ -69,19 +77,18 @@ def controller_function(interpreter_bus, controller_delay):
         time.sleep(controller_delay)
 
 
-
 if __name__ == "__main__":
+
     px = Picarx()
     px.forward(30)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
 
         sensor_delay = 0.01
-        sensor_values_bus = MessageBus()
+        sensor_values_bus = SensorBus()
         interpreter_delay = 0.05
-        interpreter_bus = MessageBus()
+        interpreter_bus = InterpreterBus()
         controller_delay = 0.1
-        controller_bus = MessageBus()
 
         eSensor = executor.submit(sensor_function, sensor_values_bus, sensor_delay)
         eInterpreter = executor.submit(interpreter_function, sensor_values_bus, interpreter_bus, interpreter_delay)
