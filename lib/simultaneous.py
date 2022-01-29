@@ -43,8 +43,8 @@ def sensor_function(sensor_values_bus, sensor_delay):
         chn_2 = ADC("A2")
         adc_value_list = [chn_0.read(), chn_1.read(), chn_2.read()]
         sensor_values_bus.write(message=adc_value_list)
-        print(sensor_values_bus.read)
         time.sleep(sensor_delay)
+        print(sensor_values_bus.read())
 
 
 # Create interpreter function that writes output from [-1,1] to the interpreter_bus based on read values from sensor bus
