@@ -66,6 +66,7 @@ def controller_function(interpreter_bus, controller_delay):
         angle = scaling_factor * interpreter_output
         px.set_dir_servo_angle(angle)
         time.sleep(controller_delay)
+        print(angle)
 
 
 if __name__ == "__main__":
