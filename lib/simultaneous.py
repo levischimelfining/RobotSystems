@@ -44,7 +44,6 @@ def sensor_function(sensor_values_bus, sensor_delay):
         adc_value_list = [chn_0.read(), chn_1.read(), chn_2.read()]
         sensor_values_bus.write(message=adc_value_list)
         time.sleep(sensor_delay)
-        print(sensor_values_bus.read())
 
 
 # Create interpreter function that writes output from [-1,1] to the interpreter_bus based on read values from sensor bus
@@ -53,7 +52,7 @@ def interpreter_function(sensor_values_bus, interpreter_bus, interpreter_delay):
     polarity = 1
 
     while True:
-        adc_list = sensor_values_bus.read
+        adc_list = sensor_values_bus.read()
         if abs(adc_list[2]-adc_list[0]) > sensitivity:
             output = -polarity * sign(adc_list[2] - adc_list[0])*(sensitivity + min(adc_list))/max(adc_list)
             if output > 1:
@@ -71,7 +70,7 @@ def interpreter_function(sensor_values_bus, interpreter_bus, interpreter_delay):
 def controller_function(interpreter_bus, controller_delay):
     scaling_factor = 35
     while True:
-        interpreter_output = interpreter_bus.read
+        interpreter_output = interpreter_bus.read()
         angle = scaling_factor * interpreter_output
         px.set_dir_servo_angle(angle)
         time.sleep(controller_delay)
