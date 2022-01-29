@@ -74,7 +74,6 @@ def controller_function(interpreter_bus, controller_delay):
         angle = scaling_factor * interpreter_output
         px.set_dir_servo_angle(angle)
         time.sleep(controller_delay)
-        print(angle)
 
 
 if __name__ == "__main__":
@@ -88,7 +87,7 @@ if __name__ == "__main__":
         sensor_values_bus = SensorBus()
         interpreter_delay = 0.05
         interpreter_bus = InterpreterBus()
-        controller_delay = 0.5
+        controller_delay = 0.1
 
         eSensor = executor.submit(sensor_function, sensor_values_bus, sensor_delay)
         eInterpreter = executor.submit(interpreter_function, sensor_values_bus, interpreter_bus, interpreter_delay)
