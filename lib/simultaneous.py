@@ -85,4 +85,4 @@ if __name__ == "__main__":
     eSensor.result()
 
     px = Picarx()
-    px.forward(20)
+    px.forward(30)
