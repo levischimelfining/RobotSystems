@@ -69,6 +69,9 @@ def controller_function(interpreter_bus, controller_delay):
 
 if __name__ == "__main__":
 
+    px = Picarx()
+    px.forward(30)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
 
         sensor_delay = 0.01
@@ -83,6 +86,3 @@ if __name__ == "__main__":
         eController = executor.submit(controller_function, interpreter_bus, controller_delay)
 
     eSensor.result()
-
-    px = Picarx()
-    px.forward(30)
