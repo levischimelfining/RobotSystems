@@ -60,17 +60,17 @@ def interpreter_function(sensor_values_bus, interpreter_bus, interpreter_delay):
 
 # Create controller function that maps read values from interpreter bus to an actual steering angle
 def controller_function(interpreter_bus, controller_delay):
-    px = Picarx()
-    px.forward(30)
     scaling_factor = 35
-    interpreter_output = interpreter_bus.read
-    angle = scaling_factor * interpreter_output
-    px.set_dir_servo_angle(angle)
-    time.sleep(controller_delay)
+    while True:
+        interpreter_output = interpreter_bus.read
+        angle = scaling_factor * interpreter_output
+        px.set_dir_servo_angle(angle)
+        time.sleep(controller_delay)
 
 
 if __name__ == "__main__":
-
+    px = Picarx()
+    px.forward(30)
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
 
         sensor_delay = 0.01
