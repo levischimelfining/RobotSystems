@@ -66,12 +66,13 @@ def controller_function(interpreter_bus, controller_delay):
         angle = scaling_factor * interpreter_output
         px.set_dir_servo_angle(angle)
         time.sleep(controller_delay)
-        print(angle)
+
 
 
 if __name__ == "__main__":
     px = Picarx()
     px.forward(30)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
 
         sensor_delay = 0.01
@@ -84,5 +85,7 @@ if __name__ == "__main__":
         eSensor = executor.submit(sensor_function, sensor_values_bus, sensor_delay)
         eInterpreter = executor.submit(interpreter_function, sensor_values_bus, interpreter_bus, interpreter_delay)
         eController = executor.submit(controller_function, interpreter_bus, controller_delay)
+
+    print(sensor_values_bus.read)
 
     eSensor.result()
