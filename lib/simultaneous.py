@@ -36,7 +36,6 @@ def sensor_function(sensor_values_bus, sensor_delay):
         adc_value_list = [chn_0.read(), chn_1.read(), chn_2.read()]
         sensor_values_bus.write(message=adc_value_list)
         time.sleep(sensor_delay)
-        print(adc_value_list)
 
 
 # Create interpreter function that writes output from [-1,1] to the interpreter_bus based on read values from sensor bus
@@ -56,6 +55,7 @@ def interpreter_function(sensor_values_bus, interpreter_bus, interpreter_delay):
             output = 0
 
         interpreter_bus.write(message=output)
+        print(output)
         time.sleep(interpreter_delay)
 
 
