@@ -75,7 +75,7 @@ if __name__ == "__main__":
     interpreter = Interpretation()
     controller_output = Controller()
     px = Picarx()
-    px.forward(20)
+    px.forward(30)
 
     # Drive the car forward while automatically steering
     while True:
