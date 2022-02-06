@@ -3,7 +3,7 @@ import concurrent.futures
 import time
 import logging
 from readerwriterlock import rwlock
-from logdecorator import log_on_start, log_on_end, log_on_error
+#from logdecorator import log_on_start, log_on_end, log_on_error
 
 DEBUG = logging.DEBUG
 logging_format = "%(asctime)s: %(message)s"
@@ -23,9 +23,9 @@ class Bus:
         # Set up the class so that functions can get a lock while working
         self.lock = rwlock.RWLockFairD()
 
-    @log_on_start(DEBUG, "{self.name:s}: Initiating read by {_name:s}")
-    @log_on_error(DEBUG, "{self.name:s}: Error on read by {_name:s}")
-    @log_on_end(DEBUG, "{self.name:s}: Finished read by {_name:s}")
+    #@log_on_start(DEBUG, "{self.name:s}: Initiating read by {_name:s}")
+    #@log_on_error(DEBUG, "{self.name:s}: Error on read by {_name:s}")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished read by {_name:s}")
     def get_message(self, _name):
 
         with self.lock.gen_rlock():
@@ -33,9 +33,9 @@ class Bus:
 
         return message
 
-    @log_on_start(DEBUG, "{self.name:s}: Initiating write by {_name:s}")
-    @log_on_error(DEBUG, "{self.name:s}: Error on write by {_name:s}")
-    @log_on_end(DEBUG, "{self.name:s}: Finished write by {_name:s}")
+    #@log_on_start(DEBUG, "{self.name:s}: Initiating write by {_name:s}")
+    #@log_on_error(DEBUG, "{self.name:s}: Error on write by {_name:s}")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished write by {_name:s}")
     def set_message(self, message, _name):
 
         with self.lock.gen_wlock():
@@ -69,9 +69,9 @@ class ConsumerProducer:
     point the service shuts down
     """
 
-    @log_on_start(DEBUG, "{name:s}: Starting to create consumer-producer")
-    @log_on_error(DEBUG, "{name:s}: Encountered an error while creating consumer-producer")
-    @log_on_end(DEBUG, "{name:s}: Finished creating consumer-producer")
+    #@log_on_start(DEBUG, "{name:s}: Starting to create consumer-producer")
+    #@log_on_error(DEBUG, "{name:s}: Encountered an error while creating consumer-producer")
+    #@log_on_end(DEBUG, "{name:s}: Finished creating consumer-producer")
     def __init__(self,
                  consumer_producer_function,
                  input_busses=default_input_bus,
@@ -87,9 +87,9 @@ class ConsumerProducer:
         self.termination_busses = ensureTuple(termination_busses)
         self.name = name
 
-    @log_on_start(DEBUG, "{self.name:s}: Starting consumer-producer service")
-    @log_on_error(DEBUG, "{self.name:s}: Encountered an error while executing consumer-producer")
-    @log_on_end(DEBUG, "{self.name:s}: Closing down consumer-producer service")
+    #@log_on_start(DEBUG, "{self.name:s}: Starting consumer-producer service")
+    #@log_on_error(DEBUG, "{self.name:s}: Encountered an error while executing consumer-producer")
+    #@log_on_end(DEBUG, "{self.name:s}: Closing down consumer-producer service")
     def __call__(self):
 
         while True:
@@ -113,9 +113,9 @@ class ConsumerProducer:
 
     # Take in a bus or a tuple of busses, and store their
     # messages into a list
-    @log_on_start(DEBUG, "{self.name:s}: Starting collecting bus values into list")
-    @log_on_error(DEBUG, "{self.name:s}: Encountered an error while collecting bus values")
-    @log_on_end(DEBUG, "{self.name:s}: Finished collecting bus values")
+    #@log_on_start(DEBUG, "{self.name:s}: Starting collecting bus values into list")
+    #@log_on_error(DEBUG, "{self.name:s}: Encountered an error while collecting bus values")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished collecting bus values")
     def collectBussesToValues(self, busses):
 
         # Wrap busses in a tuple if it isn't one already
@@ -132,9 +132,9 @@ class ConsumerProducer:
 
     # Take in  a tuple of values and a tuple of busses, and deal the values
     # into the busses
-    @log_on_start(DEBUG, "{self.name:s}: Starting dealing values into busses")
-    @log_on_error(DEBUG, "{self.name:s}: Encountered an error while dealing values into busses")
-    @log_on_end(DEBUG, "{self.name:s}: Finished dealing values into busses")
+    #@log_on_start(DEBUG, "{self.name:s}: Starting dealing values into busses")
+    #@log_on_error(DEBUG, "{self.name:s}: Encountered an error while dealing values into busses")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished dealing values into busses")
     def dealValuesToBusses(self, values, busses):
 
         # Wrap busses in a tuple if it isn't one already
@@ -160,9 +160,9 @@ class ConsumerProducer:
         for idx, v in enumerate(values):
             busses[idx].set_message(v, self.name)
 
-    @log_on_start(DEBUG, "{self.name:s}: Starting to check termination busses")
-    @log_on_error(DEBUG, "{self.name:s}: Encountered an error while checking termination busses")
-    @log_on_end(DEBUG, "{self.name:s}: Finished checking termination busses")
+    #@log_on_start(DEBUG, "{self.name:s}: Starting to check termination busses")
+    #@log_on_error(DEBUG, "{self.name:s}: Encountered an error while checking termination busses")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished checking termination busses")
     def checkTerminationBusses(self):
 
         # Look at all of the termination busses
@@ -178,9 +178,9 @@ class Producer(ConsumerProducer):
     but does not read them
     """
 
-    @log_on_start(DEBUG, "{name:s}: Starting to create producer")
-    @log_on_error(DEBUG, "{name:s}: Encountered an error while creating producer")
-    @log_on_end(DEBUG, "{name:s}: Finished creating producer")
+    #@log_on_start(DEBUG, "{name:s}: Starting to create producer")
+    #@log_on_error(DEBUG, "{name:s}: Encountered an error while creating producer")
+    #@log_on_end(DEBUG, "{name:s}: Finished creating producer")
     def __init__(self,
                  producer_function,
                  output_busses,
@@ -212,9 +212,9 @@ class Consumer(ConsumerProducer):
     but does not send to them
     """
 
-    @log_on_start(DEBUG, "{name:s}: Starting to create consumer")
-    @log_on_error(DEBUG, "{name:s}: Encountered an error while creating consumer")
-    @log_on_end(DEBUG, "{name:s}: Finished creating consumer")
+    #@log_on_start(DEBUG, "{name:s}: Starting to create consumer")
+    #@log_on_error(DEBUG, "{name:s}: Encountered an error while creating consumer")
+    #@log_on_end(DEBUG, "{name:s}: Finished creating consumer")
     def __init__(self,
                  consumer_function,
                  input_busses,
@@ -245,9 +245,9 @@ class Timer(Producer):
     "duration" parameter
     """
 
-    @log_on_start(DEBUG, "{name:s}: Starting to create timer")
-    @log_on_error(DEBUG, "{name:s}: Encountered an error while creating timer")
-    @log_on_end(DEBUG, "{name:s}: Finished creating timer")
+    #@log_on_start(DEBUG, "{name:s}: Starting to create timer")
+    #@log_on_error(DEBUG, "{name:s}: Encountered an error while creating timer")
+    #@log_on_end(DEBUG, "{name:s}: Finished creating timer")
     def __init__(self,
                  timer_busses,  # busses that should be set to true when timer triggers
                  duration=5,  # how many seconds the timer should run for (0 is forever)
@@ -265,9 +265,9 @@ class Timer(Producer):
         self.duration = duration
         self.t_start = time.time()
 
-    @log_on_start(DEBUG, "{self.name:s}: Checking current time against starting time")
-    @log_on_error(DEBUG, "{self.name:s}: Encountered an error while checking current time against starting time")
-    @log_on_end(DEBUG, "{self.name:s}: Finished checking current time against starting time")
+    #@log_on_start(DEBUG, "{self.name:s}: Checking current time against starting time")
+    #@log_on_error(DEBUG, "{self.name:s}: Encountered an error while checking current time against starting time")
+    #@log_on_end(DEBUG, "{self.name:s}: Finished checking current time against starting time")
     def timer(self):
 
         # Trigger the timer if the duration is non-zero and the time elapsed
@@ -307,9 +307,9 @@ class Printer(Consumer):
         print(self.print_prefix + str(message))
 
 
-@log_on_start(DEBUG, "runConcurrently: Starting concurrent execution")
-@log_on_error(DEBUG, "runConcurrently: Encountered an error during concurrent execution")
-@log_on_end(DEBUG, "runConcurrently: Finished concurrent execution")
+#@log_on_start(DEBUG, "runConcurrently: Starting concurrent execution")
+#@log_on_error(DEBUG, "runConcurrently: Encountered an error during concurrent execution")
+#@log_on_end(DEBUG, "runConcurrently: Finished concurrent execution")
 def runConcurrently(producer_consumer_list):
     """
     runConcurrently is aFunction that uses a concurrent.futures ThreadPoolExecutor to concurrently
