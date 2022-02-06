@@ -284,9 +284,9 @@ class Printer(Consumer):
     Printer is a consumer that reads a value stored in a bus and prints it out at specified intervals
     """
 
-    @log_on_start(DEBUG, "{name:s}: Starting to create printer")
-    @log_on_error(DEBUG, "{name:s}: Encountered an error while creating printer")
-    @log_on_end(DEBUG, "{name:s}: Finished creating printer")
+    #@log_on_start(DEBUG, "{name:s}: Starting to create printer")
+    #@log_on_error(DEBUG, "{name:s}: Encountered an error while creating printer")
+    #@log_on_end(DEBUG, "{name:s}: Finished creating printer")
     def __init__(self,
                  printer_bus,  # bus that should be printed to the terminal
                  delay=0,  # how many seconds to sleep for between printing data
