@@ -40,7 +40,7 @@ class Perception:
                 opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
                 closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # find the outline
-                areaMaxContour, area_max = getAreaMaxContour(contours)  # find the largest contour
+                areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
         if area_max > 2500:  # have found the largest area
             rect = cv2.minAreaRect(areaMaxContour)
             box = np.int0(cv2.boxPoints(rect))
@@ -56,6 +56,20 @@ class Perception:
             cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[detect_color], 1)  # draw center point
         return img
+
+    def getAreaMaxContour(self, contours):
+        contour_area_temp = 0
+        contour_area_max = 0
+        area_max_contour = None
+
+        for c in contours:  # iterate over all contours
+            contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
+            if contour_area_temp > contour_area_max:
+                contour_area_max = contour_area_temp
+                if contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
+                    area_max_contour = c
+
+        return area_max_contour, contour_area_max  # returns the largest contour
 
 if __name__ == '__main__':
     my_camera = Camera.Camera()
