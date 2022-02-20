@@ -59,12 +59,15 @@ class Perception:
 
 
 if __name__ == '__main__':
-    my_camera = Camera()
+    __target_color = ('blue', )
+    my_camera = Camera.Camera()
     my_camera.camera_open()
     while True:
         img = my_camera.frame
         if img is not None:
-            cv2.imshow('img', img)
+            frame = img.copy()
+            Frame = run(frame)
+            cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
                 break
