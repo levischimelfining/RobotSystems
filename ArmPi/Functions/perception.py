@@ -19,7 +19,7 @@ class Perception:
         self.rect = None
         self.size = (640, 480)
 
-    def run(self, img):
+    def run(self, img, target_color='blue'):
         img_copy = img.copy()
         img_h, img_w = img.shape[:2]
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
@@ -33,7 +33,7 @@ class Perception:
         areaMaxContour = 0
 
         for i in color_range:
-            if i in __target_color:
+            if i in target_color:
                 detect_color = i
                 frame_mask = cv2.inRange(frame_lab, color_range[detect_color][0], color_range[detect_color][
                     1])  # Bitwise operations on the original image and mask
@@ -58,7 +58,6 @@ class Perception:
         return img
 
 if __name__ == '__main__':
-    __target_color = ('blue', )
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
