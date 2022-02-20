@@ -18,6 +18,12 @@ class Perception:
     def __init__(self):
         self.rect = None
         self.size = (640, 480)
+        self.range_rgb = {
+            'red': (0, 0, 255),
+            'blue': (255, 0, 0),
+            'green': (0, 255, 0),
+            'black': (0, 0, 0),
+            'white': (255, 255, 255)}
 
     def run(self, img, target_color='blue'):
         img_copy = img.copy()
@@ -52,9 +58,9 @@ class Perception:
                                                  square_length)  # Get the coordinates of the center of the block
             world_x, world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
 
-            cv2.drawContours(img, [box], -1, range_rgb[detect_color], 2)
+            cv2.drawContours(img, [box], -1, self.range_rgb[detect_color], 2)
             cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[detect_color], 1)  # draw center point
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[detect_color], 1)  # draw center point
         return img
 
     def getAreaMaxContour(self, contours):
