@@ -372,8 +372,8 @@ def run(img):
                     center_list = []
                     count = 0
 
-                if len(color_list) == 3:  # 多次判断
-                    # 取平均值
+                if len(color_list) == 3:  # multiple judgments
+                    # take the average
                     color = int(round(np.mean(np.array(color_list))))
                     color_list = []
                     if color == 1:

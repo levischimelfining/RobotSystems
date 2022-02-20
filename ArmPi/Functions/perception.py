@@ -31,6 +31,9 @@ class Perception:
         self.draw_color = self.range_rgb["black"]
         self.detect_color = []
         self.color_list = []
+        self.color_area_max = None
+        self.max_area = 0
+        self.areaMaxContour_max = 0
 
     def run(self, img, target_color='blue'):
         img_copy = img.copy()
@@ -95,10 +98,6 @@ class Perception:
         frame_gb = cv2.GaussianBlur(frame_resize, (11, 11), 11)
         frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert image to LAB space
 
-        color_area_max = None
-        max_area = 0
-        areaMaxContour_max = 0
-
         for i in color_range:
             if i in target_color:
                 frame_mask = cv2.inRange(frame_lab, color_range[i][0],
@@ -110,7 +109,7 @@ class Perception:
                 if areaMaxContour is not None:
                     if area_max > max_area:  # find the largest area
                         max_area = area_max
-                        color_area_max = i
+                        self.color_area_max = i
                         areaMaxContour_max = areaMaxContour
         if max_area > 2500:  # have found the largest area
             rect = cv2.minAreaRect(areaMaxContour_max)
@@ -123,15 +122,15 @@ class Perception:
 
             world_x, world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
 
-            cv2.drawContours(img, [box], -1, self.range_rgb[color_area_max], 2)
+            cv2.drawContours(img, [box], -1, self.range_rgb[self.color_area_max], 2)
             cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[color_area_max], 1)  # draw center point
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[self.color_area_max], 1)  # draw center point
 
-            if color_area_max == 'red':  # red max
+            if self.color_area_max == 'red':  # red max
                 color = 1
-            elif color_area_max == 'green':  # green max
+            elif self.color_area_max == 'green':  # green max
                 color = 2
-            elif color_area_max == 'blue':  # blue max
+            elif self.color_area_max == 'blue':  # blue max
                 color = 3
             else:
                 color = 0
@@ -167,7 +166,7 @@ if __name__ == '__main__':
         if img is not None:
             frame = img.copy()
             perception = Perception()
-            Frame = perception.color_sort(frame)
+            Frame = perception.run(frame)
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
