@@ -65,9 +65,10 @@ if __name__ == '__main__':
 
     while True:
         img = my_camera.frame
-        perception = Perception(img)
+
         if img is not None:
             frame = img.copy()
+            perception = Perception(frame)
             Frame = perception.run
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
