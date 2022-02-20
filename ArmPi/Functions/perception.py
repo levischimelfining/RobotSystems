@@ -15,13 +15,12 @@ from CameraCalibration.CalibrationConfig import *
 
 class Perception:
 
-    def __init__(self, img):
-        self.img = img
+    def __init__(self):
         self.rect = None
         self.size = (640, 480)
 
-    def run(self):
-        img_copy = self.img.copy()
+    def run(self, img):
+        img_copy = img.copy()
         img_h, img_w = img.shape[:2]
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
         cv2.line(img, (int(img_w / 2), 0), (int(img_w / 2), img_h), (0, 0, 200), 1)
@@ -65,11 +64,10 @@ if __name__ == '__main__':
 
     while True:
         img = my_camera.frame
-
         if img is not None:
             frame = img.copy()
-            perception = Perception(frame)
-            Frame = perception.run
+            perception = Perception()
+            Frame = perception.run(frame)
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
