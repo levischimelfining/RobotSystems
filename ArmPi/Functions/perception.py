@@ -56,17 +56,19 @@ class Perception:
             cv2.drawContours(img, [box], -1, range_rgb[detect_color], 2)
             cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[detect_color], 1)  # draw center point
-
+        return img
 
 if __name__ == '__main__':
     __target_color = ('blue', )
     my_camera = Camera.Camera()
     my_camera.camera_open()
+
     while True:
         img = my_camera.frame
+        perception = Perception(img)
         if img is not None:
             frame = img.copy()
-            Frame = run(frame)
+            Frame = perception.run
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
