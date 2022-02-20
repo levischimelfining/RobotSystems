@@ -85,7 +85,7 @@ class Perception:
 
         return area_max_contour, contour_area_max  # returns the largest contour
 
-    def color_sort(self, img, target_color='blue'):
+    def color_sort(self, img, target_color=('red', 'green', 'blue')):
         img_copy = img.copy()
         img_h, img_w = img.shape[:2]
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
