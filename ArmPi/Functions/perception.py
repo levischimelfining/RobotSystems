@@ -91,7 +91,7 @@ class Perception:
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
         cv2.line(img, (int(img_w / 2), 0), (int(img_w / 2), img_h), (0, 0, 200), 1)
 
-        frame_resize = cv2.resize(img_copy, size, interpolation=cv2.INTER_NEAREST)
+        frame_resize = cv2.resize(img_copy, self.size, interpolation=cv2.INTER_NEAREST)
         frame_gb = cv2.GaussianBlur(frame_resize, (11, 11), 11)
         frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert image to LAB space
 
