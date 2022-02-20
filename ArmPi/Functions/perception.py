@@ -34,6 +34,7 @@ class Perception:
         self.color_area_max = None
         self.max_area = 0
         self.areaMaxContour_max = 0
+        self.area_max = 0
 
     def run(self, img, target_color='blue'):
         img_copy = img.copy()
@@ -107,11 +108,11 @@ class Perception:
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # find the outline
                 areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
                 if areaMaxContour is not None:
-                    if area_max > max_area:  # find the largest area
+                    if self.area_max > self.max_area:  # find the largest area
                         max_area = area_max
                         self.color_area_max = i
                         areaMaxContour_max = areaMaxContour
-        if max_area > 2500:  # have found the largest area
+        if self.max_area > 2500:  # have found the largest area
             rect = cv2.minAreaRect(areaMaxContour_max)
             box = np.int0(cv2.boxPoints(rect))
 
