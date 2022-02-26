@@ -311,6 +311,7 @@ class Motion:
                     self.set_buzzer(0.1)
                     # Do not fill in the running time parameter, adaptive running time
                     result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y - 2, 5), -90, -90, 0)
+                    print(result)
                     if result == False:
                         self.unreachable = True
                     else:
