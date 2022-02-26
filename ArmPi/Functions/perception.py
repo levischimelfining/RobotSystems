@@ -37,7 +37,7 @@ class Perception:
         self.roi = ()
 
     start_count_t1 = True
-    detect_color = []
+    detect_color = 'None'
     center_list = []
     world_X, world_Y = 0, 0
     world_x, world_y = 0, 0
@@ -80,7 +80,7 @@ class Perception:
                                                  square_length)  # Get the coordinates of the center of the block
             Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
 
-            cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
+            cv2.drawContours(img, [box], -1, self.range_rgb[detect_color], 2)
             cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
 
