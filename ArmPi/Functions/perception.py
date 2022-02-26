@@ -274,6 +274,7 @@ class Motion:
     # move arm
     def move(self):
         while True:
+            print(self.isRunning)
             if self.isRunning:
                 if self.first_move and self.start_pick_up:  # When an object is first detected
                     Motion.action_finish = False
