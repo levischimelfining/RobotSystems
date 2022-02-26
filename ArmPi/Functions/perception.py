@@ -83,6 +83,33 @@ class Perception:
             cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
             cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
+
+            distance = math.sqrt(
+                pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
+                                                                     2))  # Compare the last coordinates to determine whether to move
+            Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
+
+            if Motion.action_finish:
+                if distance < 0.3:
+                    Perception.center_list.extend((Perception.world_x, Perception.world_y))
+                    Perception.count += 1
+                    if self.start_count_t1:
+                        Perception.start_count_t1 = False
+                        self.t1 = time.time()
+                    if time.time() - self.t1 > 1.5:
+                        Perception.rotation_angle = rect[2]
+                        Perception.start_count_t1 = True
+                        Motion.world_X, Perception.world_Y = np.mean(
+                            np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
+                        Perception.count = 0
+                        Perception.center_list = []
+                        Motion.start_pick_up = True
+                else:
+                    self.t1 = time.time()
+                    Perception.start_count_t1 = True
+                    Perception.count = 0
+                    Perception.center_list = []
+
         return img
 
     def getAreaMaxContour(self, contours):
@@ -170,7 +197,6 @@ class Perception:
                                                                 2))  # Compare the last coordinates to determine whether to move
             Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
-            print(Motion.action_finish)
             if Motion.action_finish:
                 if distance < 0.3:
                     Perception.center_list.extend((Perception.world_x, Perception.world_y))
