@@ -101,7 +101,7 @@ class Perception:
                         if time.time() - self.t1 > 1.5:
                             Perception.rotation_angle = rect[2]
                             Perception.start_count_t1 = True
-                            Motion.world_X, Perception.world_Y = np.mean(
+                            Perception.world_X, Perception.world_Y = np.mean(
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.count = 0
                             Perception.center_list = []
@@ -310,7 +310,6 @@ class Motion:
                     self.set_rgb(self.detect_color)
                     self.set_buzzer(0.1)
                     # Do not fill in the running time parameter, adaptive running time
-                    print(Perception.world_X)
                     result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y - 2, 5), -90, -90, 0)
                     if result == False:
                         self.unreachable = True
