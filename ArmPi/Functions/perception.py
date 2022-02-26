@@ -62,7 +62,7 @@ class Perception:
         for i in color_range:
             if i in target_color:
                 detect_color = i
-                frame_mask = cv2.inRange(frame_lab, color_range[Perception.detect_color][0], color_range[Perception.detect_color][
+                frame_mask = cv2.inRange(frame_lab, color_range[detect_color][0], color_range[detect_color][
                     1])  # Bitwise operations on the original image and mask
                 opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
                 closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
