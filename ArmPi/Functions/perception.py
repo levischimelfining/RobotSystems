@@ -384,6 +384,7 @@ if __name__ == '__main__':
 
     perception = Perception()
     motion = Motion()
+    AK = ArmIK()
 
     motion.init_move()
     motion.start()
