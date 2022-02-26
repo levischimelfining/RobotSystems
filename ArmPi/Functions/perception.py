@@ -319,16 +319,16 @@ class Motion:
                     self.start_pick_up = False
                     self.first_move = False
                     Motion.action_finish = True
-                    print("TEST 3")
                 elif not self.first_move and not self.unreachable:  # Not the first time an object has been detected
                     self.set_rgb(self.detect_color)
                     if Motion.track:  # If it is the tracking phase
-                        print("TEST 1")
+                        print(self.isRunning)
                         if not self.isRunning:  # stop and exit flag detection
                             continue
                         AK.setPitchRangeMoving((Perception.world_x, Perception.world_y - 2, 5), -90, -90, 0, 20)
                         time.sleep(0.02)
                         Motion.track = False
+                        print(self.start_pick_up)
                     if self.start_pick_up:  # If the object has not moved for a while, start gripping
                         Motion.action_finish = False
                         print("TEST 2")
