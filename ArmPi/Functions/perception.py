@@ -275,7 +275,6 @@ class Motion:
     def move(self):
         while True:
             if self.isRunning:
-                print(self.first_move)
                 if self.first_move and self.start_pick_up:  # When an object is first detected
                     Motion.action_finish = False
                     self.set_rgb(self.detect_color)
@@ -394,14 +393,13 @@ if __name__ == '__main__':
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
-    motion.move()
-
     while True:
         img = my_camera.frame
         if img is not None:
             frame = img.copy()
             perception = Perception()
             Frame = perception.run(frame)
+            motion.move()
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
