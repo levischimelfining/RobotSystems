@@ -71,21 +71,21 @@ class Perception:
                         -2]  # find the outline
                     areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
             if area_max > 2500:  # have found the largest area
-                self.rect = cv2.minAreaRect(areaMaxContour)
+                rect = cv2.minAreaRect(areaMaxContour)
                 box = np.int0(cv2.boxPoints(self.rect))
 
                 roi = getROI(box)  # get roi region
                 get_roi = True
 
-                img_centerx, img_centery = getCenter(self.rect, roi, self.size,
+                img_centerx, img_centery = getCenter(rect, roi, self.size,
                                                      square_length)  # Get the coordinates of the center of the block
                 world_x, world_y = convertCoordinate(img_centerx, img_centery,
-                                                     size)  # Convert to real world coordinates
+                                                     self.size)  # Convert to real world coordinates
 
-                cv2.drawContours(img, [box], -1, range_rgb[Perception.detect_color], 2)
+                cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
                 cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')',
                             (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[Perception.detect_color], 1)  # draw center point
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
                 distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
                                                                     2))  # Compare the last coordinates to determine whether to move
                 Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
