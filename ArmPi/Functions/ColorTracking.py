@@ -187,7 +187,7 @@ def move():
                 action_finish = False
                 set_rgb(detect_color)
                 setBuzzer(0.1)               
-                result = AK.setPitchRangeMoving((world_X, world_Y - 2, 5), -90, -90, 0) # 不填运行时间参数，自适应运行时间
+                result = AK.setPitchRangeMoving((world_X, world_Y - 2, 5), -90, -90, 0) # Do not fill in the running time parameter, adaptive running time
                 if result == False:
                     unreachable = True
                 else:
@@ -198,7 +198,7 @@ def move():
                 action_finish = True
             elif not first_move and not unreachable: # Not the first time an object has been detected
                 set_rgb(detect_color)
-                if track: # 如果是跟踪阶段
+                if track: # If it is the tracking phase
                     if not __isRunning: # stop and exit flag detection
                         continue
                     AK.setPitchRangeMoving((world_x, world_y - 2, 5), -90, -90, 0, 20)
