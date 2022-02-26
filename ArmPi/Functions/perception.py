@@ -82,7 +82,7 @@ class Perception:
                                                      self.size)  # Convert to real world coordinates
 
                 cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
-                cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')',
+                cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
                             (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
                 distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
