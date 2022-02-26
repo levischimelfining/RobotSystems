@@ -73,7 +73,7 @@ class Perception:
             if area_max > 2500:  # have found the largest area
                 rect = cv2.minAreaRect(areaMaxContour)
                 box = np.int0(cv2.boxPoints(rect))
-
+                print("TEST")
                 roi = getROI(box)  # get roi region
                 get_roi = True
 
