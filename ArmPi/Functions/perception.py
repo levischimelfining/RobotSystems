@@ -73,13 +73,12 @@ class Perception:
             if area_max > 2500:  # have found the largest area
                 rect = cv2.minAreaRect(areaMaxContour)
                 box = np.int0(cv2.boxPoints(rect))
-                print("TEST")
                 roi = getROI(box)  # get roi region
                 get_roi = True
 
                 img_centerx, img_centery = getCenter(rect, roi, self.size,
                                                      square_length)  # Get the coordinates of the center of the block
-                world_x, world_y = convertCoordinate(img_centerx, img_centery,
+                Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery,
                                                      self.size)  # Convert to real world coordinates
 
                 cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
