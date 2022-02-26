@@ -62,8 +62,8 @@ class Perception:
         if not Motion.start_pick_up:
             for i in color_range:
                 if i in target_color:
-                    detect_color = i
-                    frame_mask = cv2.inRange(frame_lab, color_range[detect_color][0], color_range[detect_color][
+                    Perception.detect_color = i
+                    frame_mask = cv2.inRange(frame_lab, color_range[Perception.detect_color][0], color_range[Perception.detect_color][
                         1])  # Bitwise operations on the original image and mask
                     opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
                     closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
@@ -77,60 +77,40 @@ class Perception:
                 roi = getROI(box)  # get roi region
                 get_roi = True
 
-                img_centerx, img_centery = getCenter(rect, roi, size,
+                img_centerx, img_centery = getCenter(self.rect, roi, self.size,
                                                      square_length)  # Get the coordinates of the center of the block
                 world_x, world_y = convertCoordinate(img_centerx, img_centery,
                                                      size)  # Convert to real world coordinates
 
-                cv2.drawContours(img, [box], -1, range_rgb[detect_color], 2)
+                cv2.drawContours(img, [box], -1, range_rgb[Perception.detect_color], 2)
                 cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')',
                             (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[detect_color], 1)  # draw center point
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[Perception.detect_color], 1)  # draw center point
                 distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
                                                                     2))  # Compare the last coordinates to determine whether to move
                 Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
                 Motion.track = True
 
-        if area_max > 2500:  # have found the largest area
-            rect = cv2.minAreaRect(areaMaxContour)
-            box = np.int0(cv2.boxPoints(rect))
-
-            roi = getROI(box)  # get roi region
-            get_roi = True
-
-            img_centerx, img_centery = getCenter(rect, roi, self.size,
-                                                 square_length)  # Get the coordinates of the center of the block
-            Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
-
-            cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
-            cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
-
-            distance = math.sqrt(
-                pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
-                                                                     2))  # Compare the last coordinates to determine whether to move
-            Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
-
-            if Motion.action_finish:
-                if distance < 0.3:
-                    Perception.center_list.extend((Perception.world_x, Perception.world_y))
-                    Perception.count += 1
-                    if self.start_count_t1:
-                        Perception.start_count_t1 = False
+                if Motion.action_finish:
+                    if distance < 0.3:
+                        Perception.center_list.extend((Perception.world_x, Perception.world_y))
+                        Perception.count += 1
+                        if self.start_count_t1:
+                            Perception.start_count_t1 = False
+                            self.t1 = time.time()
+                        if time.time() - self.t1 > 1.5:
+                            Perception.rotation_angle = rect[2]
+                            Perception.start_count_t1 = True
+                            Motion.world_X, Perception.world_Y = np.mean(
+                                np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
+                            Perception.count = 0
+                            Perception.center_list = []
+                            Motion.start_pick_up = True
+                    else:
                         self.t1 = time.time()
-                    if time.time() - self.t1 > 1.5:
-                        Perception.rotation_angle = rect[2]
                         Perception.start_count_t1 = True
-                        Motion.world_X, Perception.world_Y = np.mean(
-                            np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                         Perception.count = 0
                         Perception.center_list = []
-                        Motion.start_pick_up = True
-                else:
-                    self.t1 = time.time()
-                    Perception.start_count_t1 = True
-                    Perception.count = 0
-                    Perception.center_list = []
 
         return img
 
