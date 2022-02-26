@@ -62,7 +62,7 @@ class Perception:
         for i in color_range:
             if i in target_color:
                 detect_color = i
-                frame_mask = cv2.inRange(frame_lab, color_range[detect_color][0], color_range[detect_color][
+                frame_mask = cv2.inRange(frame_lab, color_range[Perception.detect_color][0], color_range[Perception.detect_color][
                     1])  # Bitwise operations on the original image and mask
                 opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
                 closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
@@ -80,7 +80,7 @@ class Perception:
                                                  square_length)  # Get the coordinates of the center of the block
             Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
 
-            cv2.drawContours(img, [box], -1, self.range_rgb[detect_color], 2)
+            cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
             cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
 
