@@ -301,6 +301,7 @@ class Motion:
             Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 0))
             Board.RGB.show()
 
+
     # move arm
     def move(self):
         while True:
