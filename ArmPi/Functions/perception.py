@@ -104,7 +104,6 @@ class Perception:
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.count = 0
                             Perception.center_list = []
-                            print(Perception.world_x)
                             Motion.start_pick_up = True
                     else:
                         self.t1 = time.time()
@@ -419,15 +418,15 @@ if __name__ == '__main__':
     motion = Motion()
     AK = ArmIK()
 
-    #motion.init_move()
-    #motion.start()
+    motion.init_move()
+    motion.start()
 
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
-    #th = threading.Thread(target=motion.move)
-    #th.setDaemon(True)
-    #th.start()
+    th = threading.Thread(target=motion.move)
+    th.setDaemon(True)
+    th.start()
 
     while True:
         img = my_camera.frame
