@@ -175,6 +175,7 @@ def move():
     global center_list, count
     global start_pick_up, first_move
 
+
     # Positioning coordinates (x, y, z) of reference color blocks
     coordinate = {
         'red':   (-15 + 0.5, 12 - 0.5, 1.5),
