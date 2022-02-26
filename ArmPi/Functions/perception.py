@@ -275,8 +275,8 @@ class Motion:
     def move(self):
         while True:
             if self.isRunning:
+                print(self.start_pick_up)
                 if self.first_move and self.start_pick_up:  # When an object is first detected
-                    print("TEST")
                     Motion.action_finish = False
                     self.set_rgb(self.detect_color)
                     self.set_buzzer(0.1)
