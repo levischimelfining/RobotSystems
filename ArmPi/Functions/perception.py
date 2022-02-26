@@ -6,6 +6,7 @@ import cv2
 import Camera
 import time
 import math
+import threading
 import numpy as np
 from LABConfig import *
 from ArmIK.Transform import *
@@ -391,6 +392,10 @@ if __name__ == '__main__':
 
     my_camera = Camera.Camera()
     my_camera.camera_open()
+
+    th = threading.Thread(target=Motion.move)
+    th.setDaemon(True)
+    th.start()
 
     while True:
         img = my_camera.frame

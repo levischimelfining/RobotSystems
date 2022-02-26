@@ -383,6 +383,7 @@ if __name__ == '__main__':
     __target_color = ('blue', )
     my_camera = Camera.Camera()
     my_camera.camera_open()
+
     while True:
         img = my_camera.frame
         if img is not None:
