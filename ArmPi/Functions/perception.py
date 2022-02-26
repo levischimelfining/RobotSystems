@@ -59,15 +59,37 @@ class Perception:
         area_max = 0
         areaMaxContour = 0
 
-        for i in color_range:
-            if i in target_color:
-                Perception.detect_color = i
-                frame_mask = cv2.inRange(frame_lab, color_range[Perception.detect_color][0], color_range[Perception.detect_color][
-                    1])  # Bitwise operations on the original image and mask
-                opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
-                closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
-                contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # find the outline
-                areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
+        if not Motion.start_pick_up:
+            for i in color_range:
+                if i in target_color:
+                    detect_color = i
+                    frame_mask = cv2.inRange(frame_lab, color_range[detect_color][0], color_range[detect_color][
+                        1])  # Bitwise operations on the original image and mask
+                    opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
+                    closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
+                    contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
+                        -2]  # find the outline
+                    areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
+            if area_max > 2500:  # have found the largest area
+                self.rect = cv2.minAreaRect(areaMaxContour)
+                box = np.int0(cv2.boxPoints(self.rect))
+
+                roi = getROI(box)  # get roi region
+                get_roi = True
+
+                img_centerx, img_centery = getCenter(rect, roi, size,
+                                                     square_length)  # Get the coordinates of the center of the block
+                world_x, world_y = convertCoordinate(img_centerx, img_centery,
+                                                     size)  # Convert to real world coordinates
+
+                cv2.drawContours(img, [box], -1, range_rgb[detect_color], 2)
+                cv2.putText(img, '(' + str(world_x) + ',' + str(world_y) + ')',
+                            (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, range_rgb[detect_color], 1)  # draw center point
+                distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
+                                                                    2))  # Compare the last coordinates to determine whether to move
+                Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
+                Motion.track = True
 
         if area_max > 2500:  # have found the largest area
             rect = cv2.minAreaRect(areaMaxContour)
@@ -228,7 +250,6 @@ class Motion:
             'green': (-15 + 0.5, 6 - 0.5, 1.5),
             'blue': (-15 + 0.5, 0 - 0.5, 1.5)}
         self.servo1 = 500
-        self.track = False
         self.stop = False
         self.get_roi = False
         self.first_move = True
@@ -237,6 +258,7 @@ class Motion:
         self.target_color = ()
         self.unreachable = False
 
+    track = False
     action_finish = True
     start_pick_up = False
 
