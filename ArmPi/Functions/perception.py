@@ -310,7 +310,6 @@ class Motion:
                     self.set_rgb(self.detect_color)
                     self.set_buzzer(0.1)
                     # Do not fill in the running time parameter, adaptive running time
-                    print(Perception.world_X)
                     result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y - 2, 5), -90, -90, 0)
                     if result == False:
                         self.unreachable = True
@@ -320,9 +319,11 @@ class Motion:
                     self.start_pick_up = False
                     self.first_move = False
                     Motion.action_finish = True
+                    print("TEST 3")
                 elif not self.first_move and not self.unreachable:  # Not the first time an object has been detected
                     self.set_rgb(self.detect_color)
                     if Motion.track:  # If it is the tracking phase
+                        print("TEST 1")
                         if not self.isRunning:  # stop and exit flag detection
                             continue
                         AK.setPitchRangeMoving((Perception.world_x, Perception.world_y - 2, 5), -90, -90, 0, 20)
@@ -330,6 +331,7 @@ class Motion:
                         Motion.track = False
                     if self.start_pick_up:  # If the object has not moved for a while, start gripping
                         Motion.action_finish = False
+                        print("TEST 2")
                         if not self.isRunning:  # stop and exit flag detection
                             continue
                         Board.setBusServoPulse(1, self.servo1 - 280, 500)  # gripper open
