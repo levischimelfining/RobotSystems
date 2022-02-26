@@ -188,6 +188,7 @@ def move():
                 set_rgb(detect_color)
                 setBuzzer(0.1)               
                 result = AK.setPitchRangeMoving((world_X, world_Y - 2, 5), -90, -90, 0) # Do not fill in the running time parameter, adaptive running time
+                print(result)
                 if result == False:
                     unreachable = True
                 else:
