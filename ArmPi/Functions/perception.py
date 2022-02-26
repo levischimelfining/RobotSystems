@@ -44,6 +44,7 @@ class Perception:
     last_x, last_y = 0, 0
     rotation_angle = 0
     count = 0
+    action_finish = True
 
     def run(self, img, target_color='blue'):
         img_copy = img.copy()
@@ -169,6 +170,7 @@ class Perception:
                                                                 2))  # Compare the last coordinates to determine whether to move
             Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
+            print(Motion.action_finish)
             if Motion.action_finish:
                 if distance < 0.3:
                     Perception.center_list.extend((Perception.world_x, Perception.world_y))
@@ -179,7 +181,7 @@ class Perception:
                     if time.time() - self.t1 > 1.5:
                         Perception.rotation_angle = rect[2]
                         Perception.start_count_t1 = True
-                        Motion.world_X, Perception.world_Y = np.mean(np.array(Perception.center_list).reshape(count, 2), axis=0)
+                        Motion.world_X, Perception.world_Y = np.mean(np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                         Perception.count = 0
                         Perception.center_list = []
                         Motion.start_pick_up = True
@@ -275,7 +277,6 @@ class Motion:
     def move(self):
         while True:
             if self.isRunning:
-                print(self.start_pick_up)
                 if self.first_move and self.start_pick_up:  # When an object is first detected
                     Motion.action_finish = False
                     self.set_rgb(self.detect_color)
