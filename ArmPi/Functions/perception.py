@@ -419,8 +419,8 @@ if __name__ == '__main__':
     motion = Motion()
     AK = ArmIK()
 
-    motion.init_move()
-    motion.start()
+    #motion.init_move()
+    #motion.start()
 
     my_camera = Camera.Camera()
     my_camera.camera_open()
