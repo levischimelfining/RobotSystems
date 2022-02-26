@@ -393,9 +393,7 @@ if __name__ == '__main__':
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
-    th = threading.Thread(target=motion.move)
-    th.setDaemon(True)
-    th.start()
+    motion.move()
 
     while True:
         img = my_camera.frame
