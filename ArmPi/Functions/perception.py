@@ -104,6 +104,7 @@ class Perception:
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.count = 0
                             Perception.center_list = []
+                            print(Perception.world_x)
                             Motion.start_pick_up = True
                     else:
                         self.t1 = time.time()
