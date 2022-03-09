@@ -225,9 +225,9 @@ class Motion:
 
     def __init__(self):
         self.coordinate = {
-            'red': (-15 + 0.5, 12 - 0.5, 1.5),
-            'green': (-15 + 0.5, 6 - 0.5, 1.5),
-            'blue': (-15 + 0.5, 0 - 0.5, 1.5)}
+            'red': (-15 + 0.5, 12 - 0.5, 4),
+            'green': (-15 + 0.5, 6 - 0.5, 4),
+            'blue': (-15 + 0.5, 0 - 0.5, 4)}
         self.servo1 = 500
         self.stop = False
         self.get_roi = False

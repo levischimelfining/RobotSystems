@@ -154,9 +154,9 @@ def move():
     
     # place coordinates
     coordinate = {
-        'red':   (-15 + 0.5, 12 - 0.5, 1.5),
-        'green': (-15 + 0.5, 6 - 0.5,  1.5),
-        'blue':  (-15 + 0.5, 0 - 0.5,  1.5),
+        'red':   (-15 + 0.5, 12 - 0.5, 4),
+        'green': (-15 + 0.5, 6 - 0.5,  4),
+        'blue':  (-15 + 0.5, 0 - 0.5,  4),
     }
     while True:
         if __isRunning:        
