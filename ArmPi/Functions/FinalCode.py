@@ -214,7 +214,7 @@ class Perception:
                     Perception.count = 0
                     Perception.center_list = []
 
-            return img
+        return img
 
 
 class Motion:
