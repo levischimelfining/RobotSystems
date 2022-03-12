@@ -203,7 +203,7 @@ class Perception:
                         Perception.start_count_t1 = False
                         self.t1 = time.time()
                     if time.time() - self.t1 > 1.5:
-                        Perception.rotation_angle = rect[2]
+                        Perception.rotation_angle = self.rect[2]
                         Perception.start_count_t1 = True
                         Motion.world_X, Perception.world_Y = np.mean(
                             np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
