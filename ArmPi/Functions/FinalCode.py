@@ -436,7 +436,7 @@ if __name__ == '__main__':
         if img is not None:
             frame = img.copy()
             perception = Perception()
-            Frame = perception.color_sort(frame)
+            Frame = perception.run(frame)
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
             if key == 27:
