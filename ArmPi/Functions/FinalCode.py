@@ -94,6 +94,8 @@ class Perception:
         self.image_prep(img)
         self.get_contour(target_color)
 
+        print("CHECK")
+
         if self.area_max > 2500:  # have found the largest area
 
             self.coordinates()
