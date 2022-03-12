@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # coding=utf8
 import sys
+
 sys.path.append('/home/levi/ArmPi/')
 import cv2
 import Camera
@@ -35,6 +36,7 @@ class Perception:
         self.area_max = 0
         self.t1 = 0
         self.roi = ()
+        self.areaMaxContour = 0
 
     start_count_t1 = True
     detect_color = 'None'
@@ -46,7 +48,7 @@ class Perception:
     count = 0
     action_finish = True
 
-    def run(self, img, target_color='red'):
+    def image_prep(self, img):
         img_copy = img.copy()
         img_h, img_w = img.shape[:2]
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
@@ -55,62 +57,78 @@ class Perception:
         frame_resize = cv2.resize(img_copy, self.size, interpolation=cv2.INTER_NEAREST)
         frame_gb = cv2.GaussianBlur(frame_resize, (11, 11), 11)
         frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert image to LAB space
+        self.frame_lab = frame_lab
 
-        area_max = 0
-        areaMaxContour = 0
-
+    def get_contour(self, target_color):
         if not Motion.start_pick_up:
-            for i in color_range:
+            for i in self.range_rgb:
                 if i in target_color:
                     Perception.detect_color = i
-                    frame_mask = cv2.inRange(frame_lab, color_range[Perception.detect_color][0], color_range[Perception.detect_color][
-                        1])  # Bitwise operations on the original image and mask
+                    frame_mask = cv2.inRange(self.frame_lab, self.range_rgb[Perception.detect_color][0],
+                                             self.range_rgb[Perception.detect_color][
+                                                 1])  # Bitwise operations on the original image and mask
                     opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
                     closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
                     contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
                         -2]  # find the outline
-                    areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
-            if area_max > 2500:  # have found the largest area
-                rect = cv2.minAreaRect(areaMaxContour)
-                box = np.int0(cv2.boxPoints(rect))
-                roi = getROI(box)  # get roi region
-                get_roi = True
+                    self.areaMaxContour, self.area_max = self.getAreaMaxContour(contours)  # find the largest contour
+                    if self.areaMaxContour is not None:
+                        if self.area_max > self.max_area:  # find the largest area
+                            self.max_area = self.area_max
+                            self.color_area_max = i
+                            self.areaMaxContour_max = self.areaMaxContour
 
-                img_centerx, img_centery = getCenter(rect, roi, self.size,
-                                                     square_length)  # Get the coordinates of the center of the block
-                Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery,
-                                                     self.size)  # Convert to real world coordinates
+    def coordinates(self):
+        self.rect = cv2.minAreaRect(self.areaMaxContour_max)
+        self.box = np.int0(cv2.boxPoints(self.rect))
 
-                cv2.drawContours(img, [box], -1, self.range_rgb[Perception.detect_color], 2)
-                cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
-                            (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color], 1)  # draw center point
-                distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
-                                                                    2))  # Compare the last coordinates to determine whether to move
-                Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
-                Motion.track = True
+        self.roi = getROI(self.box)  # get roi region
+        get_roi = True
+        img_centerx, img_centery = getCenter(self.rect, self.roi, self.size,
+                                             square_length)  # Get the coordinates of the center of the object
 
-                if Motion.action_finish:
-                    if distance < 0.3:
-                        Perception.center_list.extend((Perception.world_x, Perception.world_y))
-                        Perception.count += 1
-                        if self.start_count_t1:
-                            Perception.start_count_t1 = False
-                            self.t1 = time.time()
-                        if time.time() - self.t1 > 1.5:
-                            Perception.rotation_angle = rect[2]
-                            Perception.start_count_t1 = True
-                            Perception.world_X, Perception.world_Y = np.mean(
-                                np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
-                            Perception.count = 0
-                            Perception.center_list = []
-                            Motion.start_pick_up = True
-                    else:
+        Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery,
+                                                                   self.size)  # Convert to real world coordinates
+
+    def run(self, img, target_color='blue'):
+        self.image_prep(img)
+        self.get_contour(target_color)
+
+        if self.area_max > 2500:  # have found the largest area
+
+            self.coordinates()
+
+            cv2.drawContours(img, [self.box], -1, self.range_rgb[Perception.detect_color], 2)
+            cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
+                        (min(self.box[0, 0], self.box[2, 0]), self.box[2, 1] - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[Perception.detect_color],
+                        1)  # draw center point
+            distance = math.sqrt(
+                pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
+                                                                     2))  # Compare the last coordinates to determine whether to move
+            Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
+            Motion.track = True
+
+            if Motion.action_finish:
+                if distance < 0.3:
+                    Perception.center_list.extend((Perception.world_x, Perception.world_y))
+                    Perception.count += 1
+                    if self.start_count_t1:
+                        Perception.start_count_t1 = False
                         self.t1 = time.time()
+                    if time.time() - self.t1 > 1.5:
+                        Perception.rotation_angle = self.rect[2]
                         Perception.start_count_t1 = True
+                        Perception.world_X, Perception.world_Y = np.mean(
+                            np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                         Perception.count = 0
                         Perception.center_list = []
-
+                        Motion.start_pick_up = True
+                else:
+                    self.t1 = time.time()
+                    Perception.start_count_t1 = True
+                    Perception.count = 0
+                    Perception.center_list = []
         return img
 
     def getAreaMaxContour(self, contours):
@@ -128,41 +146,16 @@ class Perception:
         return area_max_contour, contour_area_max  # returns the largest contour
 
     def color_sort(self, img, target_color=('red', 'green', 'blue')):
-        img_copy = img.copy()
-        img_h, img_w = img.shape[:2]
-        cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
-        cv2.line(img, (int(img_w / 2), 0), (int(img_w / 2), img_h), (0, 0, 200), 1)
+        self.image_prep(img)
+        self.get_contour(target_color)
 
-        frame_resize = cv2.resize(img_copy, self.size, interpolation=cv2.INTER_NEAREST)
-        frame_gb = cv2.GaussianBlur(frame_resize, (11, 11), 11)
-        frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert image to LAB space
-
-        for i in self.range_rgb:
-            if i in target_color:
-                frame_mask = cv2.inRange(frame_lab, self.range_rgb[i][0],
-                                         self.range_rgb[i][1])  # Bitwise operations on the original image and mask
-                opened = cv2.morphologyEx(frame_mask, cv2.MORPH_OPEN, np.ones((6, 6), np.uint8))  # open operation
-                closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
-                contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[-2]  # find the outline
-                areaMaxContour, area_max = self.getAreaMaxContour(contours)  # find the largest contour
-                if areaMaxContour is not None:
-                    if self.area_max > self.max_area:  # find the largest area
-                        max_area = area_max
-                        self.color_area_max = i
-                        areaMaxContour_max = areaMaxContour
         if self.max_area > 2500:  # have found the largest area
-            rect = cv2.minAreaRect(areaMaxContour_max)
-            box = np.int0(cv2.boxPoints(rect))
 
-            self.roi = getROI(box)  # get roi region
-            get_roi = True
-            img_centerx, img_centery = getCenter(rect, self.roi, self.size,
-                                                 square_length)  # Get the coordinates of the center of the object
+            self.coordinates()
 
-            Perception.world_x, Perception.world_y = convertCoordinate(img_centerx, img_centery, self.size)  # Convert to real world coordinates
-
-            cv2.drawContours(img, [box], -1, self.range_rgb[self.color_area_max], 2)
-            cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')', (min(box[0, 0], box[2, 0]), box[2, 1] - 10),
+            cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
+            cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
+                        (min(self.box[0, 0], self.box[2, 0]), self.box[2, 1] - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[self.color_area_max], 1)  # draw center point
 
             if self.color_area_max == 'red':  # red max
@@ -192,10 +185,12 @@ class Perception:
                     Perception.detect_color = 'None'
                     self.draw_color = self.range_rgb["black"]
 
-            cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65,
+            cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.65,
                         self.draw_color, 2)
-            distance = math.sqrt(pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
-                                                                2))  # Compare the last coordinates to determine whether to move
+            distance = math.sqrt(
+                pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
+                                                                     2))  # Compare the last coordinates to determine whether to move
             Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
             if Motion.action_finish:
@@ -208,7 +203,8 @@ class Perception:
                     if time.time() - self.t1 > 1.5:
                         Perception.rotation_angle = rect[2]
                         Perception.start_count_t1 = True
-                        Motion.world_X, Perception.world_Y = np.mean(np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
+                        Motion.world_X, Perception.world_Y = np.mean(
+                            np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                         Perception.count = 0
                         Perception.center_list = []
                         Motion.start_pick_up = True
@@ -300,7 +296,6 @@ class Motion:
             Board.RGB.setPixelColor(1, Board.PixelColor(0, 0, 0))
             Board.RGB.show()
 
-
     # move arm
     def move(self):
         while True:
@@ -342,7 +337,8 @@ class Motion:
 
                         if not self.isRunning:
                             continue
-                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 2), -90, -90, 0, 1000)  # lower the altitude
+                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 2), -90, -90, 0,
+                                               1000)  # lower the altitude
                         time.sleep(2)
 
                         if not self.isRunning:
@@ -353,26 +349,30 @@ class Motion:
                         if not self.isRunning:
                             continue
                         Board.setBusServoPulse(2, 500, 500)
-                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 12), -90, -90, 0, 1000)  # The robotic arm is raised
+                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 12), -90, -90, 0,
+                                               1000)  # The robotic arm is raised
                         time.sleep(1)
 
                         if not self.isRunning:
                             continue
                         # Sort and place object on reference color
-                        result = AK.setPitchRangeMoving((self.coordinate[Perception.detect_color][0], self.coordinate[Perception.detect_color][1], 12),
+                        result = AK.setPitchRangeMoving((self.coordinate[Perception.detect_color][0],
+                                                         self.coordinate[Perception.detect_color][1], 12),
                                                         -90, -90, 0)
                         time.sleep(result[2] / 1000)
 
                         if not self.isRunning:
                             continue
-                        servo2_angle = getAngle(self.coordinate[Perception.detect_color][0], self.coordinate[Perception.detect_color][1], -90)
+                        servo2_angle = getAngle(self.coordinate[Perception.detect_color][0],
+                                                self.coordinate[Perception.detect_color][1], -90)
                         Board.setBusServoPulse(2, servo2_angle, 500)
                         time.sleep(0.5)
 
                         if not self.isRunning:
                             continue
                         AK.setPitchRangeMoving(
-                            (self.coordinate[Perception.detect_color][0], self.coordinate[Perception.detect_color][1], self.coordinate[Perception.detect_color][2] + 3),
+                            (self.coordinate[Perception.detect_color][0], self.coordinate[Perception.detect_color][1],
+                             self.coordinate[Perception.detect_color][2] + 3),
                             -90, -90, 0, 500)
                         time.sleep(0.5)
 
@@ -388,7 +388,8 @@ class Motion:
 
                         if not self.isRunning:
                             continue
-                        AK.setPitchRangeMoving((self.coordinate[Perception.detect_color][0], self.coordinate[Perception.detect_color][1], 12), -90, -90,
+                        AK.setPitchRangeMoving((self.coordinate[Perception.detect_color][0],
+                                                self.coordinate[Perception.detect_color][1], 12), -90, -90,
                                                0, 800)
                         time.sleep(0.8)
 
@@ -412,6 +413,7 @@ class Motion:
                     AK.setPitchRangeMoving((0, 10, 10), -30, -30, -90, 1500)
                     time.sleep(1.5)
                 time.sleep(0.01)
+
 
 if __name__ == '__main__':
 
