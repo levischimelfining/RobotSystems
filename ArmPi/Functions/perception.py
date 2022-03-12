@@ -46,7 +46,7 @@ class Perception:
     count = 0
     action_finish = True
 
-    def run(self, img, target_color='red'):
+    def run(self, img, target_color='blue'):
         img_copy = img.copy()
         img_h, img_w = img.shape[:2]
         cv2.line(img, (0, int(img_h / 2)), (img_w, int(img_h / 2)), (0, 0, 200), 1)
