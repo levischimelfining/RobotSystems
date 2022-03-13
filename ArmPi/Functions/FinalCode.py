@@ -155,6 +155,8 @@ class Perception:
 
             self.get_contour(target_color)
 
+            print(self.max_area)
+
             if self.max_area > 2500:  # have found the largest area
 
                 self.coordinates()
