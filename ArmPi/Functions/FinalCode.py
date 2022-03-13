@@ -269,6 +269,11 @@ class Motion:
                         self.unreachable = False
                         time.sleep(result[2] / 1000)  # If the specified location can be reached, get the running time
 
+                        if not self.isRunning:
+                            continue
+
+                        Board.setBusServoPulse(1, servo1 - 280, 500)  # Gripper open
+
                         # Calculate the angle by which the gripper needs to be rotated
                         servo2_angle = getAngle(Perception.world_X, Perception.world_Y, Perception.rotation_angle)
                         Board.setBusServoPulse(2, servo2_angle, 500)
