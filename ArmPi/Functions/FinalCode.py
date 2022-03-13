@@ -118,11 +118,11 @@ class Perception:
 
             self.get_contour(target_color)
 
-            print(self.max_area)
-
             if self.max_area > 2500:  # have found the largest area
 
                 self.coordinates()
+
+                Perception.detect_color = self.color_area_max
 
                 cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
                 cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
