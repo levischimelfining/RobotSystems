@@ -182,7 +182,7 @@ class Perception:
                         color = 0
                     self.color_list.append(color)
 
-                    print(self.color_list)
+                    print(Perception.detect_color)
 
                     if distance < 0.5:
                         Perception.center_list.extend((Perception.world_x, Perception.world_y))
@@ -387,7 +387,6 @@ class Motion:
                                                 self.coordinate[Perception.detect_color][1], 12), -90, -90,
                                                0, 800)
                         time.sleep(0.8)
-
                         self.init_move()  # return to original position
                         time.sleep(1.5)
 
@@ -427,7 +426,6 @@ if __name__ == '__main__':
 
     while True:
         img = my_camera.frame
-        print(img)
         if img is not None:
             frame = img.copy()
             perception = Perception()
