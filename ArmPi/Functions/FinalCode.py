@@ -387,8 +387,7 @@ class Motion:
                         Motion.action_finish = True
                         self.start_pick_up = False
                         self.set_rgb(detect_color)
-                    else:
-                        time.sleep(0.01)
+
             else:
                 if self.stop:
                     self.stop = False
