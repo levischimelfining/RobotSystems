@@ -105,6 +105,7 @@ class Perception:
             self.contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
             if self.contour_area_temp > self.contour_area_max:
                 self.contour_area_max = self.contour_area_temp
+                print(self.contour_area_max)
                 if self.contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
                     self.area_max_contour = c
 
@@ -117,8 +118,6 @@ class Perception:
         if not Motion.start_pick_up:
 
             self.get_contour(target_color)
-
-            print(self.max_area)
 
             if self.max_area > 2500:  # have found the largest area
 
