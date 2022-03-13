@@ -170,6 +170,8 @@ class Perception:
                 color = 0
             self.color_list.append(color)
 
+            print(self.color_list)
+
             if len(self.color_list) == 3:  # multiple judgments
                 # take the average
                 color = int(round(np.mean(np.array(self.color_list))))
@@ -231,7 +233,6 @@ class Motion:
         self.get_roi = False
         self.first_move = True
         self.isRunning = False
-        self.detect_color = Perception.detect_color
         self.target_color = ()
         self.unreachable = False
 
@@ -248,7 +249,6 @@ class Motion:
         Perception.center_list = []
         self.first_move = True
         self.target_color = ()
-        self.detect_color = Perception.detect_color
         Motion.action_finish = True
         Motion.start_pick_up = False
         Perception.start_count_t1 = True
