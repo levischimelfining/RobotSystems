@@ -171,6 +171,8 @@ class Perception:
                                                                          2))  # Compare the last coordinates to determine whether to move
                 Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
+                print(Motion.start_pick_up)
+
                 if not Motion.start_pick_up:
                     if self.color_area_max == 'red':  # red max
                         color = 1
