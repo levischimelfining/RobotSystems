@@ -77,6 +77,7 @@ class Perception:
                 closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
                     -2]  # find the outline
+                print(contours)
                 self.areaMaxContour, self.area_max = self.getAreaMaxContour(contours)  # find the largest contour
                 if self.areaMaxContour is not None:
                     if self.area_max > self.max_area:  # find the largest area
@@ -102,7 +103,6 @@ class Perception:
         self.area_max_contour = None
 
         for c in contours:  # iterate over all contours
-            print("TEST")
             self.contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
             if self.contour_area_temp > self.contour_area_max:
                 self.contour_area_max = self.contour_area_temp
