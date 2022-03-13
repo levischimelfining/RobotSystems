@@ -272,7 +272,7 @@ class Motion:
                         if not self.isRunning:
                             continue
 
-                        Board.setBusServoPulse(1, servo1 - 280, 500)  # Gripper open
+                        Board.setBusServoPulse(1, self.servo1 - 280, 500)  # Gripper open
 
                         # Calculate the angle by which the gripper needs to be rotated
                         servo2_angle = getAngle(Perception.world_X, Perception.world_Y, Perception.rotation_angle)
