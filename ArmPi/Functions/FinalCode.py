@@ -300,37 +300,20 @@ class Motion:
 
     # move arm
     def move(self):
+        print(Perception.world_X, Perception.world_Y, Perception.detect_color)
         while True:
             if self.isRunning:
-                if self.first_move and Motion.start_pick_up:  # When an object is first detected
-                    Motion.action_finish = False
-                    self.set_rgb(self.detect_color)
+                if Perception.detect_color != 'None' and self.start_pick_up:  # If it is detected that the block has not moved for a while, start the gripping
+                    # Move to the target position, the height is 6cm, and judge whether the specified position can be reached by the returned result
+                    # If the runtime parameter is not given, it will be automatically calculated and returned through the result
+                    self.set_rgb(Perception.detect_color)
                     self.set_buzzer(0.1)
-                    # Do not fill in the running time parameter, adaptive running time
-                    result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y - 2, 5), -90, -90, 0)
+                    result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 7), -90, -90, 0)
                     if result == False:
                         self.unreachable = True
                     else:
                         self.unreachable = False
-                    time.sleep(result[2] / 1000)  # The third item of the returned parameter is the time
-                    Motion.start_pick_up = False
-                    self.first_move = False
-                    Motion.action_finish = True
-                elif not self.first_move and not self.unreachable:  # Not the first time an object has been detected
-                    self.set_rgb(self.detect_color)
-                    if Motion.track:  # If it is the tracking phase
-                        if not self.isRunning:  # stop and exit flag detection
-                            continue
-                        AK.setPitchRangeMoving((Perception.world_x, Perception.world_y - 2, 5), -90, -90, 0, 20)
-                        time.sleep(0.02)
-                        Motion.track = False
-                        print(Motion.start_pick_up)
-                    if Motion.start_pick_up:  # If the object has not moved for a while, start gripping
-                        Motion.action_finish = False
-                        print("TEST 2")
-                        if not self.isRunning:  # stop and exit flag detection
-                            continue
-                        Board.setBusServoPulse(1, self.servo1 - 280, 500)  # gripper open
+                        time.sleep(result[2] / 1000)  # If the specified location can be reached, get the running time
 
                         # Calculate the angle by which the gripper needs to be rotated
                         servo2_angle = getAngle(Perception.world_X, Perception.world_Y, Perception.rotation_angle)
