@@ -123,6 +123,7 @@ class Perception:
                 self.coordinates()
 
                 Perception.detect_color = self.color_area_max
+                print(Perception.world_x, Perception.world_y)
 
                 cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
                 cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
