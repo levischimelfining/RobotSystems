@@ -427,6 +427,7 @@ if __name__ == '__main__':
 
     while True:
         img = my_camera.frame
+        print(img)
         if img is not None:
             frame = img.copy()
             perception = Perception()
