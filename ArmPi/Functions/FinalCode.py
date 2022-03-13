@@ -282,7 +282,7 @@ class Motion:
 
                         if not self.isRunning:
                             continue
-                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 2), -90, -90, 0,
+                        AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 1), -90, -90, 0,
                                                1000)  # lower the altitude
                         time.sleep(2)
 
