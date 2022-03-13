@@ -182,7 +182,7 @@ class Motion:
     def __init__(self):
         self.coordinate = {
             'red': (-15 + 0.5, 17 - 0.5, 10),
-            'green': (-15 + 0.5, 8 - 0.5, 10),
+            'green': (-15 + 0.5, 9 - 0.5, 10),
             'blue': (-15 + 0.5, -1 - 0.5, 10)}
         self.servo1 = 500
         self.stop = False
