@@ -160,7 +160,6 @@ class Perception:
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.count = 0
                             Perception.center_list = []
-                            print(Perception.world_X, Perception.world_Y)
                             Motion.start_pick_up = True
                     else:
                         self.t1 = time.time()
@@ -340,7 +339,7 @@ class Motion:
                         self.first_move = True
                         self.get_roi = False
                         Motion.action_finish = True
-                        self.start_pick_up = False
+                        Motion.start_pick_up = False
                         self.set_rgb(Perception.detect_color)
 
             else:
@@ -360,15 +359,15 @@ if __name__ == '__main__':
     motion = Motion()
     AK = ArmIK()
 
-    #motion.init_move()
-    #motion.start()
+    motion.init_move()
+    motion.start()
 
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
-    #th = threading.Thread(target=motion.move)
-    #th.setDaemon(True)
-    #th.start()
+    th = threading.Thread(target=motion.move)
+    th.setDaemon(True)
+    th.start()
 
     while True:
         img = my_camera.frame
@@ -378,7 +377,7 @@ if __name__ == '__main__':
             Frame = perception.color_sort(frame)
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
-            #if key == 27:
-                #break
-    #my_camera.camera_close()
-    #cv2.destroyAllWindows()
+            if key == 27:
+                break
+    my_camera.camera_close()
+    cv2.destroyAllWindows()
