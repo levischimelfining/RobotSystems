@@ -159,6 +159,7 @@ class Perception:
                             Perception.world_X, Perception.world_Y = np.mean(
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.world_X = Perception.world_X + 2
+                            Perception.world_Y = Perception.world_Y + 1
                             Perception.count = 0
                             Perception.center_list = []
                             Motion.start_pick_up = True
@@ -180,9 +181,9 @@ class Motion:
 
     def __init__(self):
         self.coordinate = {
-            'red': (-15 + 0.5, 15 - 0.5, 10),
-            'green': (-15 + 0.5, 6 - 0.5, 10),
-            'blue': (-15 + 0.5, -3 - 0.5, 10)}
+            'red': (-15 + 0.5, 17 - 0.5, 10),
+            'green': (-15 + 0.5, 8 - 0.5, 10),
+            'blue': (-15 + 0.5, -5 - 0.5, 10)}
         self.servo1 = 500
         self.stop = False
         self.get_roi = False
