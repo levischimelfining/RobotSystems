@@ -382,12 +382,12 @@ class Motion:
                         self.init_move()  # return to original position
                         time.sleep(1.5)
 
-                        detect_color = 'None'
+                        Perception.detect_color = 'None'
                         self.first_move = True
                         self.get_roi = False
                         Motion.action_finish = True
                         self.start_pick_up = False
-                        self.set_rgb(detect_color)
+                        self.set_rgb(Perception.detect_color)
 
             else:
                 if self.stop:
