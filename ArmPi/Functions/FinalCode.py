@@ -108,7 +108,7 @@ class Perception:
                 if self.contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
                     self.area_max_contour = c
 
-        return area_max_contour, contour_area_max  # returns the largest contour
+        return self.area_max_contour, self.contour_area_max  # returns the largest contour
 
     def color_sort(self, img, target_color=('red', 'green', 'blue')):
 
