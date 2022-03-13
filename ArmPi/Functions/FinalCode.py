@@ -37,6 +37,7 @@ class Perception:
         self.t1 = 0
         self.roi = ()
         self.areaMaxContour = 0
+        self.get_roi = False
 
     start_count_t1 = True
     detect_color = 'None'
