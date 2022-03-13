@@ -151,11 +151,11 @@ class Perception:
     def color_sort(self, img, target_color=('red', 'green', 'blue')):
         self.image_prep(img)
 
+        print(Motion.start_pick_up)
+
         if not Motion.start_pick_up:
 
             self.get_contour(target_color)
-
-            print(self.max_area)
 
             if self.max_area > 2500:  # have found the largest area
 
@@ -173,8 +173,6 @@ class Perception:
                                                                          2))  # Compare the last coordinates to determine whether to move
                 Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
-                print(Motion.start_pick_up)
-
                 if not Motion.start_pick_up:
                     if self.color_area_max == 'red':  # red max
                         color = 1
@@ -185,8 +183,6 @@ class Perception:
                     else:
                         color = 0
                     self.color_list.append(color)
-
-                    print(Perception.detect_color)
 
                     if distance < 0.5:
                         Perception.center_list.extend((Perception.world_x, Perception.world_y))
