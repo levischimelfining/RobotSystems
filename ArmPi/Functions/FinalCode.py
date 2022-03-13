@@ -68,8 +68,8 @@ class Perception:
 
     def get_contour(self, target_color):
         for i in color_range:
-            print(i)
             if i in target_color:
+                print(i)
                 Perception.detect_color = i
                 frame_mask = cv2.inRange(self.frame_lab, color_range[Perception.detect_color][0],
                                          color_range[Perception.detect_color][
