@@ -67,7 +67,6 @@ class Perception:
         for i in self.range_rgb:
             if i in target_color:
                 Perception.detect_color = i
-                print(Perception.detect_color)
                 frame_mask = cv2.inRange(self.frame_lab, self.range_rgb[Perception.detect_color][0],
                                          self.range_rgb[Perception.detect_color][
                                              1])  # Bitwise operations on the original image and mask
@@ -115,6 +114,8 @@ class Perception:
         if not Motion.start_pick_up:
 
             self.get_contour(target_color)
+
+            print(self.max_area)
 
             if self.max_area > 2500:  # have found the largest area
 
