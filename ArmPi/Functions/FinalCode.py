@@ -102,8 +102,8 @@ class Perception:
         self.area_max_contour = None
 
         for c in contours:  # iterate over all contours
+            print("TEST")
             self.contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
-            print(self.contour_area_temp)
             if self.contour_area_temp > self.contour_area_max:
                 self.contour_area_max = self.contour_area_temp
                 if self.contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
