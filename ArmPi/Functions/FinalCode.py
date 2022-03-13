@@ -404,15 +404,15 @@ if __name__ == '__main__':
     motion = Motion()
     AK = ArmIK()
 
-    motion.init_move()
-    motion.start()
+    #motion.init_move()
+    #motion.start()
 
     my_camera = Camera.Camera()
     my_camera.camera_open()
 
-    th = threading.Thread(target=motion.move)
-    th.setDaemon(True)
-    th.start()
+    #th = threading.Thread(target=motion.move)
+    #th.setDaemon(True)
+    #th.start()
 
     while True:
         img = my_camera.frame
