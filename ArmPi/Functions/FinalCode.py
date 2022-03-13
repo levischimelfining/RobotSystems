@@ -75,6 +75,7 @@ class Perception:
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
                     -2]  # find the outline
                 self.areaMaxContour, self.area_max = self.getAreaMaxContour(contours)  # find the largest contour
+                print(self.areaMaxContour)
                 if self.areaMaxContour is not None:
                     if self.area_max > self.max_area:  # find the largest area
                         self.max_area = self.area_max
@@ -114,8 +115,6 @@ class Perception:
         if not Motion.start_pick_up:
 
             self.get_contour(target_color)
-
-            print(self.max_area)
 
             if self.max_area > 2500:  # have found the largest area
 
