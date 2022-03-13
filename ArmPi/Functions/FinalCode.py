@@ -158,7 +158,7 @@ class Perception:
                             Perception.start_count_t1 = True
                             Perception.world_X, Perception.world_Y = np.mean(
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
-                            Perception.world_X = Perception.world_X + 5
+                            Perception.world_X = Perception.world_X + 2
                             Perception.count = 0
                             Perception.center_list = []
                             Motion.start_pick_up = True
