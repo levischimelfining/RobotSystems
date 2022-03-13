@@ -67,7 +67,8 @@ class Perception:
         self.frame_lab = frame_lab
 
     def get_contour(self, target_color):
-        for i in self.range_rgb:
+        for i in color_range:
+            print(i)
             if i in target_color:
                 Perception.detect_color = i
                 frame_mask = cv2.inRange(self.frame_lab, self.range_rgb[Perception.detect_color][0],
@@ -77,7 +78,6 @@ class Perception:
                 closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, np.ones((6, 6), np.uint8))  # closed operation
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
                     -2]  # find the outline
-                print(contours)
                 self.areaMaxContour, self.area_max = self.getAreaMaxContour(contours)  # find the largest contour
                 if self.areaMaxContour is not None:
                     if self.area_max > self.max_area:  # find the largest area
