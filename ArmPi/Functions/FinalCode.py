@@ -123,7 +123,6 @@ class Perception:
                 self.coordinates()
 
                 Perception.detect_color = self.color_area_max
-                print(Perception.world_x, Perception.world_y)
 
                 cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
                 cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
@@ -161,6 +160,7 @@ class Perception:
                                 np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                             Perception.count = 0
                             Perception.center_list = []
+                            print(Perception.world_X, Perception.world_Y)
                             Motion.start_pick_up = True
                     else:
                         self.t1 = time.time()
@@ -168,29 +168,11 @@ class Perception:
                         Perception.count = 0
                         Perception.center_list = []
 
-                    if len(self.color_list) == 3:  # multiple judgments
-                        # take the average
-                        color = int(round(np.mean(np.array(self.color_list))))
-
-                        if color == 1:
-                            Perception.detect_color = 'red'
-                            self.draw_color = self.range_rgb["red"]
-                        elif color == 2:
-                            Perception.detect_color = 'green'
-                            self.draw_color = self.range_rgb["green"]
-                        elif color == 3:
-                            Perception.detect_color = 'blue'
-                            self.draw_color = self.range_rgb["blue"]
-                        else:
-                            Perception.detect_color = 'None'
-                            self.draw_color = self.range_rgb["black"]
             else:
                 if not Motion.start_pick_up:
                     self.draw_color = (0, 0, 0)
                     Perception.detect_color = "None"
 
-        cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65,
-                    self.draw_color, 2)
         return img
 
 
