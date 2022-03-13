@@ -38,6 +38,9 @@ class Perception:
         self.roi = ()
         self.areaMaxContour = 0
         self.get_roi = False
+        self.contour_area_temp = 0
+        self.contour_area_max = 0
+        self.area_max_contour = None
 
     start_count_t1 = True
     detect_color = 'None'
@@ -75,7 +78,6 @@ class Perception:
                 contours = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[
                     -2]  # find the outline
                 self.areaMaxContour, self.area_max = self.getAreaMaxContour(contours)  # find the largest contour
-                print(self.areaMaxContour)
                 if self.areaMaxContour is not None:
                     if self.area_max > self.max_area:  # find the largest area
                         self.max_area = self.area_max
@@ -95,16 +97,16 @@ class Perception:
                                                                    self.size)  # Convert to real world coordinates
 
     def getAreaMaxContour(self, contours):
-        contour_area_temp = 0
-        contour_area_max = 0
-        area_max_contour = None
+        self.contour_area_temp = 0
+        self.contour_area_max = 0
+        self.area_max_contour = None
 
         for c in contours:  # iterate over all contours
-            contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
-            if contour_area_temp > contour_area_max:
-                contour_area_max = contour_area_temp
-                if contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
-                    area_max_contour = c
+            self.contour_area_temp = math.fabs(cv2.contourArea(c))  # Calculate the contour area
+            if self.contour_area_temp > self.contour_area_max:
+                self.contour_area_max = self.contour_area_temp
+                if self.contour_area_temp > 300:  # The contour with the largest area is valid only if the area is greater than 300 to filter out the noise
+                    self.area_max_contour = c
 
         return area_max_contour, contour_area_max  # returns the largest contour
 
@@ -115,6 +117,8 @@ class Perception:
         if not Motion.start_pick_up:
 
             self.get_contour(target_color)
+
+            print(self.max_area)
 
             if self.max_area > 2500:  # have found the largest area
 
