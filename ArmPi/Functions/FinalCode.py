@@ -56,11 +56,13 @@ class Perception:
 
         frame_resize = cv2.resize(img_copy, self.size, interpolation=cv2.INTER_NEAREST)
         frame_gb = cv2.GaussianBlur(frame_resize, (11, 11), 11)
+        if self.get_roi and not Motion.start_pick_up:
+            self.get_roi = False
+            frame_gb = getMaskROI(frame_gb, self.roi, self.size)
         frame_lab = cv2.cvtColor(frame_gb, cv2.COLOR_BGR2LAB)  # Convert image to LAB space
         self.frame_lab = frame_lab
 
     def get_contour(self, target_color):
-        if not Motion.start_pick_up:
             for i in color_range:
                 if i in target_color:
                     Perception.detect_color = i
@@ -83,7 +85,7 @@ class Perception:
         self.box = np.int0(cv2.boxPoints(self.rect))
 
         self.roi = getROI(self.box)  # get roi region
-        get_roi = True
+        self.get_roi = True
         img_centerx, img_centery = getCenter(self.rect, self.roi, self.size,
                                              square_length)  # Get the coordinates of the center of the object
 
@@ -147,75 +149,83 @@ class Perception:
 
     def color_sort(self, img, target_color=('red', 'green', 'blue')):
         self.image_prep(img)
-        self.get_contour(target_color)
 
-        if self.max_area > 2500:  # have found the largest area
+        if not Motion.start_pick_up:
 
-            self.coordinates()
+            self.get_contour(target_color)
 
-            cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
-            cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
-                        (min(self.box[0, 0], self.box[2, 0]), self.box[2, 1] - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[self.color_area_max], 1)  # draw center point
+            if self.max_area > 2500:  # have found the largest area
 
-            if self.color_area_max == 'red':  # red max
-                color = 1
-            elif self.color_area_max == 'green':  # green max
-                color = 2
-            elif self.color_area_max == 'blue':  # blue max
-                color = 3
-            else:
-                color = 0
-            self.color_list.append(color)
+                self.coordinates()
 
-            print(self.color_list)
+                cv2.drawContours(img, [self.box], -1, self.range_rgb[self.color_area_max], 2)
+                cv2.putText(img, '(' + str(Perception.world_x) + ',' + str(Perception.world_y) + ')',
+                            (min(self.box[0, 0], self.box[2, 0]), self.box[2, 1] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, self.range_rgb[self.color_area_max], 1)  # draw center point
+                cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
+                            0.65,
+                            self.draw_color, 2)
+                distance = math.sqrt(
+                    pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
+                                                                         2))  # Compare the last coordinates to determine whether to move
+                Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
 
-            if len(self.color_list) == 3:  # multiple judgments
-                # take the average
-                color = int(round(np.mean(np.array(self.color_list))))
+                if not Motion.start_pick_up:
+                    if self.color_area_max == 'red':  # red max
+                        color = 1
+                    elif self.color_area_max == 'green':  # green max
+                        color = 2
+                    elif self.color_area_max == 'blue':  # blue max
+                        color = 3
+                    else:
+                        color = 0
+                    self.color_list.append(color)
 
-                if color == 1:
-                    Perception.detect_color = 'red'
-                    self.draw_color = self.range_rgb["red"]
-                elif color == 2:
-                    Perception.detect_color = 'green'
-                    self.draw_color = self.range_rgb["green"]
-                elif color == 3:
-                    Perception.detect_color = 'blue'
-                    self.draw_color = self.range_rgb["blue"]
-                else:
-                    Perception.detect_color = 'None'
-                    self.draw_color = self.range_rgb["black"]
+                    print(self.color_list)
 
-            cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.65,
-                        self.draw_color, 2)
-            distance = math.sqrt(
-                pow(Perception.world_x - Perception.last_x, 2) + pow(Perception.world_y - Perception.last_y,
-                                                                     2))  # Compare the last coordinates to determine whether to move
-            Perception.last_x, Perception.last_y = Perception.world_x, Perception.world_y
-
-            if Motion.action_finish:
-                if distance < 0.3:
-                    Perception.center_list.extend((Perception.world_x, Perception.world_y))
-                    Perception.count += 1
-                    if self.start_count_t1:
-                        Perception.start_count_t1 = False
+                    if distance < 0.5:
+                        Perception.center_list.extend((Perception.world_x, Perception.world_y))
+                        Perception.count += 1
+                        if self.start_count_t1:
+                            Perception.start_count_t1 = False
+                            self.t1 = time.time()
+                        if time.time() - self.t1 > 1:
+                            Perception.rotation_angle = self.rect[2]
+                            Perception.start_count_t1 = True
+                            Perception.world_X, Perception.world_Y = np.mean(
+                                np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
+                            Perception.count = 0
+                            Perception.center_list = []
+                            Motion.start_pick_up = True
+                    else:
                         self.t1 = time.time()
-                    if time.time() - self.t1 > 1.5:
-                        Perception.rotation_angle = self.rect[2]
                         Perception.start_count_t1 = True
-                        Motion.world_X, Perception.world_Y = np.mean(
-                            np.array(Perception.center_list).reshape(Perception.count, 2), axis=0)
                         Perception.count = 0
                         Perception.center_list = []
-                        Motion.start_pick_up = True
-                else:
-                    self.t1 = time.time()
-                    Perception.start_count_t1 = True
-                    Perception.count = 0
-                    Perception.center_list = []
 
+                    if len(self.color_list) == 3:  # multiple judgments
+                        # take the average
+                        color = int(round(np.mean(np.array(self.color_list))))
+
+                        if color == 1:
+                            Perception.detect_color = 'red'
+                            self.draw_color = self.range_rgb["red"]
+                        elif color == 2:
+                            Perception.detect_color = 'green'
+                            self.draw_color = self.range_rgb["green"]
+                        elif color == 3:
+                            Perception.detect_color = 'blue'
+                            self.draw_color = self.range_rgb["blue"]
+                        else:
+                            Perception.detect_color = 'None'
+                            self.draw_color = self.range_rgb["black"]
+            else:
+                if not Motion.start_pick_up:
+                    self.draw_color = (0, 0, 0)
+                    Perception.detect_color = "None"
+
+        cv2.putText(img, "Color: " + Perception.detect_color, (10, img.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.65,
+                    self.draw_color, 2)
         return img
 
 
@@ -422,7 +432,7 @@ if __name__ == '__main__':
             Frame = perception.color_sort(frame)
             cv2.imshow('Frame', Frame)
             key = cv2.waitKey(1)
-            if key == 27:
-                break
-    my_camera.camera_close()
-    cv2.destroyAllWindows()
+            #if key == 27:
+                #break
+    #my_camera.camera_close()
+    #cv2.destroyAllWindows()
