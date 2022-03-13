@@ -303,7 +303,7 @@ class Motion:
         print(Perception.world_X, Perception.world_Y, Perception.detect_color)
         while True:
             if self.isRunning:
-                if Perception.detect_color != 'None' and self.start_pick_up:  # If it is detected that the block has not moved for a while, start the gripping
+                if Perception.detect_color != 'None' and Motion.start_pick_up:  # If it is detected that the block has not moved for a while, start the gripping
                     # Move to the target position, the height is 6cm, and judge whether the specified position can be reached by the returned result
                     # If the runtime parameter is not given, it will be automatically calculated and returned through the result
                     self.set_rgb(Perception.detect_color)
