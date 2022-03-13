@@ -300,7 +300,6 @@ class Motion:
 
     # move arm
     def move(self):
-        print(Perception.world_X, Perception.world_Y, Perception.detect_color)
         while True:
             if self.isRunning:
                 if Perception.detect_color != 'None' and Motion.start_pick_up:  # If it is detected that the block has not moved for a while, start the gripping
@@ -314,6 +313,8 @@ class Motion:
                     else:
                         self.unreachable = False
                         time.sleep(result[2] / 1000)  # If the specified location can be reached, get the running time
+
+                        print(Perception.world_X, Perception.world_Y, Perception.detect_color)
 
                         # Calculate the angle by which the gripper needs to be rotated
                         servo2_angle = getAngle(Perception.world_X, Perception.world_Y, Perception.rotation_angle)
