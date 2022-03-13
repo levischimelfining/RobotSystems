@@ -110,7 +110,7 @@ class Perception:
 
         return self.area_max_contour, self.contour_area_max  # returns the largest contour
 
-    def color_sort(self, img, target_color=('red', 'green')):
+    def color_sort(self, img, target_color=('red', 'green', 'blue')):
 
         self.image_prep(img)
 
