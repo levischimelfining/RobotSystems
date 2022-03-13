@@ -263,7 +263,7 @@ class Motion:
                     # If the runtime parameter is not given, it will be automatically calculated and returned through the result
                     self.set_rgb(Perception.detect_color)
                     self.set_buzzer(0.1)
-                    result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 6), -90, -90, 0)
+                    result = AK.setPitchRangeMoving((Perception.world_X, Perception.world_Y, 4), -90, -90, 0)
                     if result == False:
                         self.unreachable = True
                     else:
